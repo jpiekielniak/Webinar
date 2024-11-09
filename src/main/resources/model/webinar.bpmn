@@ -49,9 +49,6 @@
     <bpmn:serviceTask id="Activity_PreBooking" name="Wstępna rezerwacja">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="preBooking" />
-        <zeebe:ioMapping>
-          <zeebe:input source="=now()" target="registerApplicationJobStart" />
-        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_01koz73</bpmn:incoming>
       <bpmn:outgoing>Flow_18le6kj</bpmn:outgoing>

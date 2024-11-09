@@ -23,9 +23,6 @@
     <bpmn:serviceTask id="Activity_ValidateCreditCardData" name="Sprawdź poprawność wprowadzonych danych">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="validateCreditCardData" />
-        <zeebe:ioMapping>
-          <zeebe:output source="=isValidCreditCardData" target="isValidCreditCardData" />
-        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_09vim15</bpmn:incoming>
       <bpmn:outgoing>Flow_04a1cvj</bpmn:outgoing>
@@ -38,7 +35,7 @@
       <bpmn:outgoing>Flow_001kz35</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0jz1zif" name="Tak" sourceRef="Gateway_ValidDataDecision" targetRef="Activity_PayPreBooking">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matches(isValidCreditCardData, true)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isCreditCardDataValid = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_001kz35" sourceRef="Activity_PayPreBooking" targetRef="Activity_SendConfirmationPaymentEmail" />
     <bpmn:sequenceFlow id="Flow_0t269lg" sourceRef="Activity_SendConfirmationPaymentEmail" targetRef="Event_PaymentCompleted" />
@@ -50,7 +47,7 @@
       <bpmn:outgoing>Flow_0t269lg</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0fri3iz" name="Nie" sourceRef="Gateway_ValidDataDecision" targetRef="Activity_18f4vjr">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matches(isValidCreditCardData, false)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isCreditCardDataValid = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -118,10 +115,10 @@
       <bpmndi:BPMNEdge id="Flow_0fri3iz_di" bpmnElement="Flow_0fri3iz">
         <di:waypoint x="770" y="293" />
         <di:waypoint x="770" y="370" />
-        <di:waypoint x="350" y="360" />
+        <di:waypoint x="350" y="370" />
         <di:waypoint x="350" y="308" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="552" y="347" width="17" height="14" />
+          <dc:Bounds x="552" y="352" width="17" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
