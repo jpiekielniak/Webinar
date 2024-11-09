@@ -1,47 +1,127 @@
-<html>
+<!DOCTYPE html>
+<html lang="pl">
 <head>
-  <link rel="stylesheet" href="https://unpkg.com/@bpmn-io/form-js@0.7.2/dist/assets/form-js.css">
-  <style>
-    #form {
-      max-width: 800px;
-    }
-  </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
-<div id="success"><span id="success-message"></span></div>
-<div id="form"></div>
+<div id="success">
+    <span id="success-message"></span>
+    <button id="payButton" style="display: none;">Opłać rezerwację</button>
+</div>
 
-<script type="application/form-schema" src="recruitment.json"></script>
+<div id="form">
+    <h2>Zapisz się na webinar już dziś!</h2>
 
-<script src="https://unpkg.com/@bpmn-io/form-js@0.10.0/dist/form-viewer.umd.js"></script>
+    <form id="webinarForm">
+        <label for="firstName">Imię:</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="lastName">Nazwisko:</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="topicWebinar">Temat webinaru:</label>
+        <select id="topicWebinar" name="topicWebinar" required>
+            <option value="administracja">Administracja</option>
+            <option value="informatyka">Informatyka</option>
+            <option value="fizjoterapia">Fizjoterapia</option>
+            <option value="grafika">Grafika</option>
+            <option value="lekarski">Lekarski</option>
+            <option value="psychologia">Psychologia</option>
+        </select>
+
+        <button type="submit">Zatwierdź</button>
+    </form>
+</div>
+
+<div id="paymentForm" style="display: none;">
+    <h2>Podaj dane do płatności</h2>
+    <form id="creditCardForm">
+        <label for="cardHolderName">Imię i nazwisko posiadacza karty:</label>
+        <input type="text" id="cardHolderName" name="cardHolderName" required>
+
+        <label for="cardNumber">Numer karty:</label>
+        <input type="text" id="cardNumber" name="cardNumber" required pattern="\d{16}"
+               placeholder="1234 5678 9012 3456">
+
+        <label for="expiryDate">Data ważności:</label>
+        <input type="text" id="expiryDate" name="expiryDate" required placeholder="MM/RR" pattern="\d{2}/\d{2}">
+
+        <label for="cvc">Kod CVC:</label>
+        <input type="text" id="cvc" name="cvc" required pattern="\d{3}" placeholder="123">
+
+        <button type="submit">Zapłać</button>
+    </form>
+</div>
+
+<div id="thankYouMessage" style="display: none;">
+    <h2>Płatność zakończona sukcesem. Dziękujemy!</h2>
+</div>
 
 <script>
-  $.getJSON('/recruitment.json', function(data) {
-    const schema = data;
-    const container = document.querySelector('#form');
+    $('#webinarForm').on('submit', function (event) {
+        event.preventDefault();
 
-    FormViewer.createForm({
-      container,
-      schema
-    }).then(function(form) {
-      console.log(form);
-      form.on('submit', event => {
-        console.log('Form <submit>', event, event.data);
+        const formData = {
+            firstName: $('#firstName').val(),
+            lastName: $('#lastName').val(),
+            email: $('#email').val(),
+            topicWebinar: $('#topicWebinar').val()
+        };
 
         $.ajax("/start", {
-          data : JSON.stringify(event.data),
-          contentType : 'application/json',
-          type : 'POST',
-          success: function(data) {
-            form.reset();
-            $('#success-message').html("<b>Aplikacja zarejestrowana. Decyzja zostanie przekazana na podany adres email.</b>");
-          }
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            type: 'POST',
+            success: function (data) {
+                $('#webinarForm')[0].reset();
+
+                $('#form').fadeOut(500, function () {
+                    $('#success-message').html("Aplikacja zarejestrowana. Decyzja zostanie przekazana na podany adres email.");
+                    $('#success').fadeIn();
+                    $('#payButton').fadeIn();
+                });
+            }
         });
-      });
     });
-  });
+
+    $('#payButton').on('click', function () {
+        $('#success').fadeOut(500, function () {
+            $('#paymentForm').fadeIn();
+        });
+    });
+
+    $('#creditCardForm').on('submit', function (event) {
+        event.preventDefault();
+
+        const paymentData = {
+            cardHolderName: $('#cardHolderName').val(),
+            cardNumber: $('#cardNumber').val(),
+            expiryDate: $('#expiryDate').val(),
+            cvc: $('#cvc').val()
+        };
+
+        $.ajax("/start", { //todo zmienić na /payment
+            data: JSON.stringify(paymentData),
+            contentType: 'application/json',
+            type: 'POST',
+            success: function (data) {
+                $('#creditCardForm')[0].reset();
+                $('#paymentForm').fadeOut(500, function () {
+                    $('#thankYouMessage').fadeIn();
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Błąd podczas przetwarzania płatności:", textStatus, errorThrown);
+                alert("Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.");
+            }
+        });
+    });
 </script>
 </body>
 </html>
