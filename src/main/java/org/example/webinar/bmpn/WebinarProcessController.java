@@ -1,8 +1,6 @@
-package org.example.webinar;
+package org.example.webinar.bmpn;
 
 import io.camunda.zeebe.client.ZeebeClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +12,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/")
-public class TestController {
+public class WebinarProcessController {
 
+    private static final String BPMN_PROCESS_ID = "reservation-process";
 
     @Qualifier("zeebeClientLifecycle")
     @Autowired
@@ -26,7 +25,7 @@ public class TestController {
 
         client
                 .newCreateInstanceCommand()
-                .bpmnProcessId("reservation-process")
+                .bpmnProcessId(BPMN_PROCESS_ID)
                 .latestVersion()
                 .variables(variables)
                 .send();
