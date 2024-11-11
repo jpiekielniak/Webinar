@@ -1,10 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Potwierdzenie płatności</title>
+    <link href="http://192.168.1.39:8082/css/email.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f5f0;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .email-header img {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #d9534f;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-
+<div class="email-container">
+    <div class="email-header">
+        <img src="https://i.postimg.cc/GmxxwZ3M/webinar-logo.png" alt="Logo Webinaru">
+    </div>
+    <h2>Potwierdzenie płatności</h2>
+    <div>
+        <p>Witaj, <span th:text="${username}"></span></p>
+        <p>Dziękujemy za dokonanie płatności za wybrany webinar. Twoja transakcja została pomyślnie zrealizowana.</p>
+    </div>
+</div>
 </body>
 </html>
