@@ -18,6 +18,9 @@ spring:
           auth: true
           starttls:
             enable: true
+            required: true
+          ssl:
+            protocols: TLSv1.2
 
 h2:
   console:
