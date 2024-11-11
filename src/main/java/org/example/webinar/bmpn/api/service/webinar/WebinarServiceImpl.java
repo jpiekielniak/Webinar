@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WebinarServiceImpl implements WebinarService {
     @Override
-    public boolean checkIfFreeSlotExists() {
+    public boolean isFreeSlot(String webinar) {
         return false;
     }
 
