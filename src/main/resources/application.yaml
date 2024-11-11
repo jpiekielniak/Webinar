@@ -1,0 +1,35 @@
+zeebe:
+  client:
+    cloud:
+      clusterId: "2db754f4-2c6e-484e-975e-2a4f98ef709c"
+      clientId: "NRW6WpHBEbhaMZ~KS8jyrxoF7hkbkeb7"
+      clientSecret: "DsmEfhGWzuQl2ciS1.cgEAr-GouskgBd8J8pMOrum6jLwC9tLs9CeTG-03vQmw6g"
+      region: "lhr-1"
+
+spring:
+  mail:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "webinar.iwipb@gmail.com"
+    password: "sdfkmfxzqpyvgxgc"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+h2:
+  console:
+    enabled:
+  datasource:
+    url: "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false"
+    driver-class-name: "org.h2.Driver"
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
