@@ -1,4 +1,4 @@
-package org.example.webinar;
+package org.example.webinar.bmpn.api.service.email;
 
 import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;

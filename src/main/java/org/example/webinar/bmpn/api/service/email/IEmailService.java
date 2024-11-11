@@ -1,4 +1,4 @@
-package org.example.webinar;
+package org.example.webinar.bmpn.api.service.email;
 
 public interface IEmailService {
     void sendConfirmReservationEmail(String to);
