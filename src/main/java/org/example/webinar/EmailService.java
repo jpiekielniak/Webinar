@@ -17,22 +17,22 @@ public class EmailService implements IEmailService {
     private SpringTemplateEngine templateEngine;
 
     @Override
-    public void sendConfirmReservationEmail(String to, String firstName, String reservationId) {
+    public void sendConfirmReservationEmail(String to) {
 
     }
 
     @Override
-    public void sendFailureReservationEmail(String to, String firstName, String reservationId) {
+    public void sendFailureReservationEmail(String to) {
 
     }
 
     @Override
-    public void sendConfirmPaymentEmail(String to, String firstName, String reservationId) {
+    public void sendConfirmPaymentEmail(String to) {
 
     }
 
     @Override
-    public void sendRejectedPaymentEmail(String to, String firstName, String reservationId) {
+    public void sendRejectedPaymentEmail(String to) {
 
     }
 
