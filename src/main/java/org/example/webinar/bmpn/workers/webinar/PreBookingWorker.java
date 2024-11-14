@@ -3,32 +3,34 @@ package org.example.webinar.bmpn.workers.webinar;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
+import lombok.AllArgsConstructor;
 import org.example.webinar.bmpn.api.model.request.PrereservationRequest;
 import org.example.webinar.bmpn.api.service.webinar.WebinarService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
+import java.util.Map;
 
 @Component
+@AllArgsConstructor
 public class PreBookingWorker {
 
-    @Autowired
     private WebinarService webinarService;
 
     @JobWorker(type = "preBooking")
-    public HashMap<String, Object> preBooking(final JobClient client, final ActivatedJob job) {
-        HashMap<String, Object> jobResultVariables = new HashMap<>();
+    public Map<String, Object> preBooking(final JobClient client, final ActivatedJob job) {
+        var jobResultVariables = job.getVariablesAsMap();
 
-        //Logika biznesowa - zarezerwowanie miejsca (utworzenie rezerwacji w bazie danych ze statusem pre-booking)
-        // Zwrócenie ID rezerwacji w zmiennej "reservationId" do dalszego przetwarzania
-        PrereservationRequest reservationData = PrereservationRequest.builder()
-                .name((String)job.getVariablesAsMap().get("name"))
-                .surname((String)job.getVariablesAsMap().get("surname"))
-                .email((String)job.getVariablesAsMap().get("email"))
-                .webinarId((Long)job.getVariablesAsMap().get("webinarId"))
+        var reservationData = PrereservationRequest.builder()
+                .firstName((String) jobResultVariables.get("firstName"))
+                .lastName((String) jobResultVariables.get("lastName"))
+                .email((String) jobResultVariables.get("email"))
+                .webinarId((Long) jobResultVariables.get("webinarId"))
                 .build();
-        Long reservationId = webinarService.preBookReservation(reservationData);
+
+        var reservationId = webinarService.preBookReservation(reservationData);
+        jobResultVariables.put("preReservationId", reservationId);
+
+
         return jobResultVariables;
     }
 }

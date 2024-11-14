@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PrereservationRequest {
-    private String name;
-    private String surname;
+    private String firstName;
+    private String lastName;
     private String email;
     private Long webinarId;
 }

@@ -18,7 +18,7 @@ public class WebinarServiceImpl implements WebinarService {
 
     @Override
     public Long preBookReservation(PrereservationRequest prereservationRequest) {
-        return null;
+        return 1L;
     }
 
     @Override

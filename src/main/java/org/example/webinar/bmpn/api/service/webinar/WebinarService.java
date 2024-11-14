@@ -8,5 +8,4 @@ public interface WebinarService {
     String completeReservation(Long reservationId);
     Long preBookReservation(PrereservationRequest prereservationRequest);
     void deleteReservation(Long reservationId);
-
 }
