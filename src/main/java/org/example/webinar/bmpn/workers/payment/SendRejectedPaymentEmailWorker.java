@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import org.example.webinar.bmpn.api.service.email.EmailService;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 @Component
 @AllArgsConstructor
 public class SendRejectedPaymentEmailWorker {
@@ -16,13 +14,17 @@ public class SendRejectedPaymentEmailWorker {
     private EmailService emailService;
 
     @JobWorker(type = "sendRejectedPaymentEmail")
-    public Map<String, Object> sendRejectedPaymentEmail(final JobClient client, final ActivatedJob job) {
+    public void sendRejectedPaymentEmail(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
         final var email = jobResultVariables.get("email").toString();
         emailService.sendRejectedPaymentEmail(email);
 
         jobResultVariables.put("isPaymentSuccessful", false);
-        return jobResultVariables;
+
+        client.newCompleteCommand(job.getKey())
+                .variables(jobResultVariables)
+                .send()
+                .join();
     }
 }
