@@ -1,14 +1,13 @@
 package org.example.webinar.bmpn.api.service.webinar;
 
 import org.example.webinar.bmpn.api.model.request.PrereservationRequest;
-import org.example.webinar.bmpn.api.model.response.PrereservationResponse;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WebinarServiceImpl implements WebinarService {
     @Override
-    public boolean isFreeSlot(String webinar) {
-        return false;
+    public boolean isFreeSlot(Long webinarId) {
+        return true;
     }
 
     @Override

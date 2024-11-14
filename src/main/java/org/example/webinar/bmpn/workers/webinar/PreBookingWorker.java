@@ -20,15 +20,15 @@ public class PreBookingWorker {
     public Map<String, Object> preBooking(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
-        var reservationData = PrereservationRequest.builder()
-                .firstName((String) jobResultVariables.get("firstName"))
-                .lastName((String) jobResultVariables.get("lastName"))
-                .email((String) jobResultVariables.get("email"))
-                .webinarId((Long) jobResultVariables.get("webinarId"))
+        var preReservationData = PrereservationRequest.builder()
+                .firstName(jobResultVariables.get("firstName").toString())
+                .lastName(jobResultVariables.get("lastName").toString())
+                .email(jobResultVariables.get("email").toString())
+                .webinarId(Long.parseLong(jobResultVariables.get("webinarId").toString()))
                 .build();
 
-        var reservationId = webinarService.preBookReservation(reservationData);
-        jobResultVariables.put("preReservationId", reservationId);
+        var preReservationId = webinarService.preBookReservation(preReservationData);
+        jobResultVariables.put("preReservationId", preReservationId);
 
 
         return jobResultVariables;
