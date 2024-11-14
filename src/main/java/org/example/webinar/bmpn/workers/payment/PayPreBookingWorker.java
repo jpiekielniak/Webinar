@@ -19,9 +19,8 @@ public class PayPreBookingWorker {
     public Map<String, Object> payPreBooking(final ZeebeClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
-        //Logika biznesowa - płatność rezerwacji (zmiana statusu płatności w bazie danych na paid)
-        // Zwrócić ewentualnie dla dalszego procesu adres e-mail
-        paymentService.makeReservationPayment((Long) job.getVariablesAsMap().get("reservationId"));
+        final var preReservationId = Long.parseLong(job.getVariablesAsMap().get("preReservationId").toString());
+        paymentService.makePreReservationPayment(preReservationId);
         return jobResultVariables;
     }
 }

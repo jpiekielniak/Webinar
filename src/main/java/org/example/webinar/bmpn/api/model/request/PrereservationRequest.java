@@ -14,4 +14,5 @@ public class PrereservationRequest {
     private String lastName;
     private String email;
     private Long webinarId;
+    private Boolean isPaid = false;
 }
