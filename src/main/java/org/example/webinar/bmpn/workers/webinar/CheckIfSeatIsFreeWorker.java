@@ -12,6 +12,7 @@ import java.util.Map;
 @Component
 @AllArgsConstructor
 public class CheckIfSeatIsFreeWorker {
+
     private WebinarService webinarService;
 
     @JobWorker(type = "checkIfSeatIsFree")
