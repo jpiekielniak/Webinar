@@ -4,6 +4,6 @@ import org.example.webinar.bmpn.api.model.request.CreditCard;
 import org.springframework.stereotype.Service;
 
 public interface PaymentService {
-    void makePreReservationPayment(Long preReservationId);
+    void makePayment(Long preReservationId);
     boolean checkIsCreditCardValid(CreditCard creditCard);
 }

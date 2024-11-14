@@ -21,6 +21,7 @@ public class SendConfirmationPaymentEmailWorker {
 
         final var email = jobResultVariables.get("email").toString();
         emailService.sendConfirmPaymentEmail(email);
+        jobResultVariables.put("isPaymentSuccessful", true);
 
         return jobResultVariables;
     }
