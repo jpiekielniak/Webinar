@@ -24,7 +24,7 @@ public class EmailServiceImpl implements EmailService {
         var context = new Context();
         var emailContent = templateEngine.process(CONFIRM_RESERVATION_EMAIL, context);
 
-        sendHtmlEmail(to, "Reservation Confirmed", emailContent);
+        sendHtmlEmail(to, "Potwierdzenie rezerwacji", emailContent);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class EmailServiceImpl implements EmailService {
         var context = new Context();
         var emailContent = templateEngine.process(FAILURE_RESERVATION_EMAIL, context);
 
-        sendHtmlEmail(to, "Reservation Failed", emailContent);
+        sendHtmlEmail(to, "Rezerwacja odrzucona", emailContent);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
         var context = new Context();
         var emailContent = templateEngine.process(CONFIRM_PAYMENT_EMAIL, context);
 
-        sendHtmlEmail(to, "Payment Confirmed", emailContent);
+        sendHtmlEmail(to, "Potwierdzenie płatności", emailContent);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class EmailServiceImpl implements EmailService {
         var context = new Context();
         var emailContent = templateEngine.process(REJECTED_PAYMENT_EMAIL, context);
 
-        sendHtmlEmail(to, "Payment Rejected", emailContent);
+        sendHtmlEmail(to, "Płatność odrzucona", emailContent);
     }
 
     private void sendHtmlEmail(String to, String subject, String content) {

@@ -29,6 +29,8 @@ public class ValidateCreditCardDataWorker {
                 .expirationDate((String)job.getVariablesAsMap().get("expirationDate"))
                 .build();
         paymentService.checkIsCreditCardValid(creditCard);
+        jobResultVariables.put("isCreditCardDataValid", false);
+
         return jobResultVariables;
     }
 }
