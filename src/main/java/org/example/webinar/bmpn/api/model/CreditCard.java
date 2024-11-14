@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CreditCard {
-    private String firstName;
-    private String lastName;
+    private String owner;
+    private String cardNumber;
     private String code;
     private String expirationDate;
 }

@@ -24,8 +24,8 @@ public class ValidateCreditCardDataWorker {
         var jobResultVariables = job.getVariablesAsMap();
 
         final var creditCard = CreditCard.builder()
-                .firstName(jobResultVariables.get("firstName").toString())
-                .lastName(jobResultVariables.get("lastName").toString())
+                .owner(jobResultVariables.get("owner").toString())
+                .cardNumber(jobResultVariables.get("cardNumber").toString())
                 .code(jobResultVariables.get("code").toString())
                 .expirationDate(jobResultVariables.get("expiryDate").toString())
                 .build();

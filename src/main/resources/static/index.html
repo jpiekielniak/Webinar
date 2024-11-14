@@ -42,8 +42,8 @@
 <div id="paymentForm" style="display: none;">
     <h2>Podaj dane do płatności</h2>
     <form id="creditCardForm">
-        <label for="cardHolderName">Imię i nazwisko posiadacza karty:</label>
-        <input type="text" id="cardHolderName" name="cardHolderName" required>
+        <label for="owner">Imię i nazwisko posiadacza karty:</label>
+        <input type="text" id="owner" name="owner" required>
 
         <label for="cardNumber">Numer karty:</label>
         <input type="text" id="cardNumber" name="cardNumber" required pattern="\d{16}"
@@ -104,14 +104,14 @@
         event.preventDefault();
 
         const paymentData = {
-            cardHolderName: $('#cardHolderName').val(),
+            owner: $('#owner').val(),
             cardNumber: $('#cardNumber').val(),
             expiryDate: $('#expiryDate').val(),
             code: $('#code').val(),
             processInstanceKey: processInstanceKey
         };
 
-        $.ajax("/payment", { //todo zmienić na /payment
+        $.ajax("/payment", {
             data: JSON.stringify(paymentData),
             contentType: 'application/json',
             type: 'POST',
