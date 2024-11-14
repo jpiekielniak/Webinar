@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class ValidateCreditCardDataWorker {
@@ -17,7 +18,7 @@ public class ValidateCreditCardDataWorker {
     private PaymentService paymentService;
 
     @JobWorker(type = "validateCreditCardData")
-    public HashMap<String, Object> validateCreditCardData(final JobClient client, final ActivatedJob job) {
+    public Map<String, Object> validateCreditCardData(final JobClient client, final ActivatedJob job) {
         HashMap<String, Object> jobResultVariables = new HashMap<>();
         //Logika biznesowa - walidacja danych karty kredytowej
         // Zwrócenie wyniku walidacji w zmiennej "isCreditCardDataValid" do dalszego przetwarzania

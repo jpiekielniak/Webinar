@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class RemovePreBookingWorker {
@@ -16,7 +17,7 @@ public class RemovePreBookingWorker {
     private WebinarService webinarService;
 
     @JobWorker(type = "removePreBooking")
-    public HashMap<String, Object> removePreBooking(final JobClient client, final ActivatedJob job) {
+    public Map<String, Object> removePreBooking(final JobClient client, final ActivatedJob job) {
         HashMap<String, Object> jobResultVariables = new HashMap<>();
         //Logika biznesowa - usunięcie rezerwacji z bazy danych
         webinarService.deleteReservation((Long) job.getVariablesAsMap().get("reservationId"));

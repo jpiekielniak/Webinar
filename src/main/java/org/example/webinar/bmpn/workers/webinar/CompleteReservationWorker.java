@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class CompleteReservationWorker {
@@ -16,7 +17,7 @@ public class CompleteReservationWorker {
     private WebinarService webinarService;
 
     @JobWorker(type = "completeReservation")
-    public HashMap<String, Object> completeReservation(final JobClient client, final ActivatedJob job) {
+    public Map<String, Object> completeReservation(final JobClient client, final ActivatedJob job) {
         HashMap<String, Object> jobResultVariables = new HashMap<>();
 
         //Logika biznesowa - zakończenie rezerwacji (zmiana statusu rezerwacji w bazie danych na completed)

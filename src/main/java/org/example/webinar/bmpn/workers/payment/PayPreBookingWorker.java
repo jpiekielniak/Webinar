@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class PayPreBookingWorker {
@@ -16,7 +17,7 @@ public class PayPreBookingWorker {
     private PaymentService paymentService;
 
     @JobWorker(type = "payPreBooking")
-    public HashMap<String, Object> payPreBooking(final ZeebeClient client, final ActivatedJob job) {
+    public Map<String, Object> payPreBooking(final ZeebeClient client, final ActivatedJob job) {
         HashMap<String, Object> jobResultVariables = new HashMap<>();
         //Logika biznesowa - płatność rezerwacji (zmiana statusu płatności w bazie danych na paid)
         // Zwrócić ewentualnie dla dalszego procesu adres e-mail
