@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="a3b2585" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
-  <bpmn:process id="make-payment-process" name="Pay Process" isExecutable="true">
+  <bpmn:process id="make-payment" name="Pay Process" isExecutable="true">
     <bpmn:endEvent id="Event_PaymentCompleted" name="Zakończenie płatności">
       <bpmn:incoming>Flow_0t269lg</bpmn:incoming>
     </bpmn:endEvent>
@@ -56,7 +56,7 @@
       <bpmn:outgoing>Flow_0fbo7mh</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0sg7fet" messageRef="Message_33quqfo" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:startEvent id="Event_1n4jzug">
+    <bpmn:startEvent id="Event_1n4jzug" name="Zainicjowanie proces płatności">
       <bpmn:outgoing>Flow_11y32xy</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_11y32xy" sourceRef="Event_1n4jzug" targetRef="payment-form" />
@@ -67,7 +67,7 @@
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="make-payment-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="make-payment">
       <bpmndi:BPMNShape id="Event_0e2ysp1_di" bpmnElement="Event_PaymentCompleted">
         <dc:Bounds x="1492" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -109,11 +109,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1n4jzug_di" bpmnElement="Event_1n4jzug">
         <dc:Bounds x="152" y="250" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="130" y="293" width="80" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0t269lg_di" bpmnElement="Flow_0t269lg">
-        <di:waypoint x="1360" y="120" />
-        <di:waypoint x="1492" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04a1cvj_di" bpmnElement="Flow_04a1cvj">
         <di:waypoint x="730" y="268" />
         <di:waypoint x="875" y="268" />
@@ -126,6 +125,18 @@
           <dc:Bounds x="931" y="179" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_001kz35_di" bpmnElement="Flow_001kz35">
+        <di:waypoint x="1080" y="120" />
+        <di:waypoint x="1260" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t269lg_di" bpmnElement="Flow_0t269lg">
+        <di:waypoint x="1360" y="120" />
+        <di:waypoint x="1492" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fbo7mh_di" bpmnElement="Flow_0fbo7mh">
+        <di:waypoint x="378" y="268" />
+        <di:waypoint x="630" y="268" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1j3kiym_di" bpmnElement="Flow_1j3kiym">
         <di:waypoint x="900" y="293" />
         <di:waypoint x="900" y="450" />
@@ -133,14 +144,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="931" y="369" width="17" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fbo7mh_di" bpmnElement="Flow_0fbo7mh">
-        <di:waypoint x="378" y="268" />
-        <di:waypoint x="630" y="268" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_001kz35_di" bpmnElement="Flow_001kz35">
-        <di:waypoint x="1080" y="120" />
-        <di:waypoint x="1260" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0stdcqw_di" bpmnElement="Flow_0stdcqw">
         <di:waypoint x="1120" y="450" />

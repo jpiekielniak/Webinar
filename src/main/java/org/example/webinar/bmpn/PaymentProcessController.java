@@ -17,14 +17,18 @@ import java.util.Map;
 public class PaymentProcessController {
 
     @Qualifier("zeebeClientLifecycle")
+
     private ZeebeClient client;
+    private static final String MESSAGE = "paymentRequestMessage";
 
     @PostMapping("/payment")
     public Map<String, Object> startPayment(@RequestBody Map<String, Object> variables) {
 
+        final var correlationKey = variables.get("processInstanceKey").toString();
+
         client.newPublishMessageCommand()
-                .messageName("paymentRequestMessage")
-                .correlationKey(variables.get("processInstanceKey").toString())
+                .messageName(MESSAGE)
+                .correlationKey(correlationKey)
                 .variables(variables)
                 .send()
                 .join();
