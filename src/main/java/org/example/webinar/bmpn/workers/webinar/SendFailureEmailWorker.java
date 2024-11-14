@@ -3,22 +3,24 @@ package org.example.webinar.bmpn.workers.webinar;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
+import lombok.AllArgsConstructor;
+import org.example.webinar.bmpn.api.service.email.EmailService;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@AllArgsConstructor
 public class SendFailureEmailWorker {
+    private EmailService emailService;
 
     @JobWorker(type = "sendFailureEmail")
     public Map<String, Object> sendFailureEmail(final JobClient client, final ActivatedJob job) {
-        HashMap<String, Object> jobResultVariables = new HashMap<>();
+        var jobResultVariables = job.getVariablesAsMap();
 
-        //Logika biznesowa - wysłanie maila z informacją o niepowodzeniu (jakiś email sender service)
-        // Zwrócenie wartości true w zmiennej "emailSent"
+        final var email = jobResultVariables.get("email").toString();
+        emailService.sendFailureReservationEmail(email);
 
-        //jobResultVariables.put("emailSent", true);
         return jobResultVariables;
     }
 }

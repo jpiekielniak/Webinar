@@ -25,14 +25,14 @@
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
 
-        <label for="topicWebinar">Temat webinaru:</label>
-        <select id="topicWebinar" name="topicWebinar" required>
-            <option value="administracja">Administracja</option>
-            <option value="informatyka">Informatyka</option>
-            <option value="fizjoterapia">Fizjoterapia</option>
-            <option value="grafika">Grafika</option>
-            <option value="lekarski">Lekarski</option>
-            <option value="psychologia">Psychologia</option>
+        <label for="webinarId">Temat webinaru:</label>
+        <select id="webinarId" name="webinarId" required>
+            <option value=1>Programowanie</option>
+            <option value=2>Nowoczesny HTML</option>
+            <option value=3>Docker w praktyce</option>
+            <option value=4>Azure od postaw</option>
+            <option value=5>Mikroserwisy w .NET</option>
+            <option value=6>Databricks - wprowadzenie</option>
         </select>
 
         <button type="submit">Zatwierdź</button>
@@ -47,13 +47,13 @@
 
         <label for="cardNumber">Numer karty:</label>
         <input type="text" id="cardNumber" name="cardNumber" required pattern="\d{16}"
-               placeholder="1234 5678 9012 3456">
+               placeholder="1234567890123456">
 
         <label for="expiryDate">Data ważności:</label>
         <input type="text" id="expiryDate" name="expiryDate" required placeholder="MM/RR" pattern="\d{2}/\d{2}">
 
-        <label for="cvc">Kod CVC:</label>
-        <input type="text" id="cvc" name="cvc" required pattern="\d{3}" placeholder="123">
+        <label for="code">Kod CVV / CVC:</label>
+        <input type="text" id="code" name="code" required pattern="\d{3}" placeholder="123">
 
         <button type="submit">Zapłać</button>
     </form>
@@ -64,6 +64,8 @@
 </div>
 
 <script>
+    let processInstanceKey;
+
     $('#webinarForm').on('submit', function (event) {
         event.preventDefault();
 
@@ -71,7 +73,7 @@
             firstName: $('#firstName').val(),
             lastName: $('#lastName').val(),
             email: $('#email').val(),
-            topicWebinar: $('#topicWebinar').val()
+            webinarId: Number($('#webinarId').val())
         };
 
         $.ajax("/start", {
@@ -80,6 +82,8 @@
             type: 'POST',
             success: function (data) {
                 $('#webinarForm')[0].reset();
+
+                processInstanceKey = data.processInstanceKey;
 
                 $('#form').fadeOut(500, function () {
                     $('#success-message').html("Aplikacja zarejestrowana. Decyzja zostanie przekazana na podany adres email.");
@@ -103,10 +107,11 @@
             cardHolderName: $('#cardHolderName').val(),
             cardNumber: $('#cardNumber').val(),
             expiryDate: $('#expiryDate').val(),
-            cvc: $('#cvc').val()
+            code: $('#code').val(),
+            processInstanceKey: processInstanceKey
         };
 
-        $.ajax("/start", { //todo zmienić na /payment
+        $.ajax("/payment", { //todo zmienić na /payment
             data: JSON.stringify(paymentData),
             contentType: 'application/json',
             type: 'POST',

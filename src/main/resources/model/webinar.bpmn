@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_00rwpxz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="10db623" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0" camunda:diagramRelationId="fc823716-113b-48eb-8a29-7d277d662f00">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_00rwpxz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ab92ea9" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0" camunda:diagramRelationId="fc823716-113b-48eb-8a29-7d277d662f00">
   <bpmn:process id="reservation-process" name="Reservation Process" isExecutable="true">
     <bpmn:extensionElements />
     <bpmn:startEvent id="StartEvent_ReservationRequested" name="Wysłanie formularza z danymi">
@@ -36,13 +36,6 @@
       <bpmn:outgoing>Flow_01koz73</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1w6gxlj" sourceRef="Activity_CheckIfSeatIsFree" targetRef="Gateway_0gwz8fg" />
-    <bpmn:serviceTask id="Activity_SendFailureEmail" name="Wyślij wiadomość email z informacją o niepowodzeniu">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="sendFailureEmail" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0w8d227</bpmn:incoming>
-      <bpmn:outgoing>Flow_1jdes7f</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0w8d227" name="Nie" sourceRef="Gateway_0gwz8fg" targetRef="Activity_SendFailureEmail">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isFreeSpot=false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -65,27 +58,23 @@
       <bpmn:outgoing>Flow_09cat7h</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_05qlv72" name="Tak" sourceRef="Gateway_PaymentDecision" targetRef="Activity_CompleteReservation">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matches(isPaymentSuccessful, true)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isPaymentSuccessful=true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1wvyqiq" name="Nie" sourceRef="Gateway_PaymentDecision" targetRef="Activity_RemovePreBooking">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matches(isPaymentSuccessful, false)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isPaymentSuccessful=false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_09cat7h" sourceRef="Activity_CompleteReservation" targetRef="Activity_Send_Confirm_Reservation_Email" />
     <bpmn:sequenceFlow id="Flow_19dlyas" sourceRef="Activity_Send_Confirm_Reservation_Email" targetRef="EndEvent_Enrolled" />
     <bpmn:callActivity id="Activity_Pay" name="Dokonaj płatności">
       <bpmn:extensionElements>
-        <zeebe:calledElement processId="make-payment-process" propagateAllChildVariables="false" />
+        <zeebe:calledElement processId="make-payment" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:output source="=isPaymentSuccessful" target="isPaymentSuccessful" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_18le6kj</bpmn:incoming>
       <bpmn:outgoing>Flow_1apvgc0</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:serviceTask id="Activity_Send_Confirm_Reservation_Email" name="Wyślij wiadomość email z potwierdzeniem">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="sendConfirmReservationEmail" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_09cat7h</bpmn:incoming>
-      <bpmn:outgoing>Flow_19dlyas</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:endEvent id="Event_WebinarOff" name="Webinar niedostępny">
       <bpmn:incoming>Flow_1jdes7f</bpmn:incoming>
     </bpmn:endEvent>
@@ -94,11 +83,34 @@
       <bpmn:incoming>Flow_036uite</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_036uite" sourceRef="Activity_RemovePreBooking" targetRef="Event_RemovePreBooking" />
+    <bpmn:sendTask id="Activity_SendFailureEmail" name="Wyślij wiadomość email z informacją o niepowodzeniu">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="sendFailureEmail" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0w8d227</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jdes7f</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="Activity_Send_Confirm_Reservation_Email" name="Wyślij wiadomość email z potwierdzeniem">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="sendConfirmReservationEmail" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_09cat7h</bpmn:incoming>
+      <bpmn:outgoing>Flow_19dlyas</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:boundaryEvent id="Event_Reservation_Exception" name="Błąd rezerwacji" attachedToRef="Activity_PreBooking">
+      <bpmn:outgoing>Flow_0floh93</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1w2vbk9" errorRef="Error_0g84kmw" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="RESERVAT" name="Rezerwacja nie utworzona">
+      <bpmn:incoming>Flow_0floh93</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0floh93" sourceRef="Event_Reservation_Exception" targetRef="RESERVAT" />
   </bpmn:process>
   <bpmn:error id="Error_1g994ru" name="Error_FacultyUnavalible" errorCode="FACULTY_UNAVAILABLE" />
   <bpmn:error id="Error_0hv9p1k" name="Error_1fgerid" />
   <bpmn:error id="Error_0ehfjhb" name="Error_FacultyUnavailable" errorCode="Error_FacultyUnavailable" />
   <bpmn:error id="Error_1l46sz8" name="Error_FacultyUnavailble" errorCode="FACULTY_UNAVAILBLE" />
+  <bpmn:error id="Error_0g84kmw" name="ERROR_RESERVATION_NOT_CREATED" errorCode="RESERVATION_NOT_CREATED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="reservation-process">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_ReservationRequested">
@@ -133,10 +145,6 @@
           <dc:Bounds x="392" y="373" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_10h6axe" bpmnElement="Activity_SendFailureEmail">
-        <dc:Bounds x="550" y="490" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1x5blkq" bpmnElement="Activity_PreBooking">
         <dc:Bounds x="550" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -148,10 +156,6 @@
       <bpmndi:BPMNShape id="Activity_16qfdvq_di" bpmnElement="Activity_Pay">
         <dc:Bounds x="790" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1jwc8no_di" bpmnElement="Activity_Send_Confirm_Reservation_Email">
-        <dc:Bounds x="1420" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_00jiijb" bpmnElement="Event_WebinarOff">
         <dc:Bounds x="582" y="682" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -162,6 +166,24 @@
         <dc:Bounds x="1342" y="389" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1334" y="339" width="54" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0izyi3n_di" bpmnElement="Activity_SendFailureEmail">
+        <dc:Bounds x="550" y="490" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18th417_di" bpmnElement="Activity_Send_Confirm_Reservation_Email">
+        <dc:Bounds x="1420" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1jjizig" bpmnElement="RESERVAT">
+        <dc:Bounds x="712" y="402" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="446" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11hanck_di" bpmnElement="Event_Reservation_Exception">
+        <dc:Bounds x="612" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="652" y="303" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0i3jw9h_di" bpmnElement="Flow_0i3jw9h">
@@ -232,6 +254,11 @@
       <bpmndi:BPMNEdge id="Flow_036uite_di" bpmnElement="Flow_036uite">
         <di:waypoint x="1230" y="407" />
         <di:waypoint x="1342" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0floh93_di" bpmnElement="Flow_0floh93">
+        <di:waypoint x="630" y="308" />
+        <di:waypoint x="630" y="420" />
+        <di:waypoint x="712" y="420" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

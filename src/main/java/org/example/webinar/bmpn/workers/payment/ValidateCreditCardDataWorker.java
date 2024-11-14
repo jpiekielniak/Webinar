@@ -3,32 +3,47 @@ package org.example.webinar.bmpn.workers.payment;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
+import lombok.AllArgsConstructor;
+import org.example.webinar.bmpn.api.entity.ReservationStatus;
 import org.example.webinar.bmpn.api.model.request.CreditCard;
 import org.example.webinar.bmpn.api.service.payment.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.webinar.bmpn.api.service.reservation.ReservationService;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@AllArgsConstructor
 public class ValidateCreditCardDataWorker {
 
-    @Autowired
     private PaymentService paymentService;
+    private ReservationService reservationService;
 
     @JobWorker(type = "validateCreditCardData")
     public Map<String, Object> validateCreditCardData(final JobClient client, final ActivatedJob job) {
-        HashMap<String, Object> jobResultVariables = new HashMap<>();
-        //Logika biznesowa - walidacja danych karty kredytowej
-        // Zwrócenie wyniku walidacji w zmiennej "isCreditCardDataValid" do dalszego przetwarzania
-        CreditCard creditCard = CreditCard.builder()
-                .name((String)job.getVariablesAsMap().get("name"))
-                .surname((String)job.getVariablesAsMap().get("surname"))
-                .code((String) job.getVariablesAsMap().get("code"))
-                .expirationDate((String)job.getVariablesAsMap().get("expirationDate"))
+        var jobResultVariables = job.getVariablesAsMap();
+
+        final var creditCard = CreditCard.builder()
+                .firstName(jobResultVariables.get("firstName").toString())
+                .lastName(jobResultVariables.get("lastName").toString())
+                .code(jobResultVariables.get("code").toString())
+                .expirationDate(jobResultVariables.get("expiryDate").toString())
                 .build();
-        paymentService.checkIsCreditCardValid(creditCard);
+
+        var isCreditCardValid = paymentService.checkIsCreditCardValid(creditCard);
+
+        if(!isCreditCardValid.get()) {
+            client.newThrowErrorCommand(job.getKey())
+                    .errorCode("CREDIT_CARD_NOT_VALID")
+                    .send()
+                    .join();
+        }
+
+        final var reservationId = Long.parseLong(jobResultVariables.get("reservationId").toString());
+        reservationService.changeReservationStatus(reservationId, ReservationStatus.PAYED);
+
+        jobResultVariables.put("isCreditCardDataValid", isCreditCardValid.get());
+
         return jobResultVariables;
     }
 }

@@ -1,4 +1,4 @@
-package org.example.webinar.bmpn.workers.webinar;
+package org.example.webinar.bmpn.workers.payment;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
@@ -11,16 +11,18 @@ import java.util.Map;
 
 @Component
 @AllArgsConstructor
-public class SendConfirmReservationEmailWorker {
+public class SendRejectedPaymentEmailWorker {
 
     private EmailService emailService;
 
-    @JobWorker(type = "sendConfirmReservationEmail")
-    public Map<String, Object> sendConfirmReservationEmail(final JobClient client, final ActivatedJob job) {
+    @JobWorker(type = "sendRejectedPaymentEmail")
+    public Map<String, Object> sendRejectedPaymentEmail(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
         final var email = jobResultVariables.get("email").toString();
-        emailService.sendConfirmReservationEmail(email);
+        emailService.sendRejectedPaymentEmail(email);
+
+        jobResultVariables.put("isPaymentSuccessful", false);
 
         return jobResultVariables;
     }

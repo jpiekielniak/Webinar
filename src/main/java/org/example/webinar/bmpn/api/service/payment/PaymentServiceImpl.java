@@ -3,15 +3,13 @@ package org.example.webinar.bmpn.api.service.payment;
 import org.example.webinar.bmpn.api.model.request.CreditCard;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    @Override
-    public String makeReservationPayment(Long reservationId) {
-        return  null;
-    }
 
     @Override
-    public boolean checkIsCreditCardValid(CreditCard creditCard) {
-        return false;
+    public Optional<Boolean> checkIsCreditCardValid(CreditCard creditCard) {
+        return Optional.of(true);
     }
 }

@@ -1,6 +1,7 @@
 package org.example.webinar.bmpn;
 
 import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,24 +14,24 @@ import java.util.Map;
 @RestController
 @RequestMapping("/")
 @AllArgsConstructor
-public class WebinarProcessController {
-
-    private static final String BPMN_PROCESS_ID = "reservation-process";
+public class PaymentProcessController {
 
     @Qualifier("zeebeClientLifecycle")
     private ZeebeClient client;
+    private static final String MESSAGE = "paymentRequestMessage";
 
-    @PostMapping("/start")
-    public Map<String, Object> startProcessInstance(@RequestBody Map<String, Object> variables) {
+    @PostMapping("/payment")
+    public Map<String, Object> startPayment(@RequestBody Map<String, Object> variables) {
 
-        var event = client
-                .newCreateInstanceCommand()
-                .bpmnProcessId(BPMN_PROCESS_ID)
-                .latestVersion()
+        final var processInstanceKey = variables.get("processInstanceKey").toString();
+
+        client.newPublishMessageCommand()
+                .messageName(MESSAGE)
+                .correlationKey(processInstanceKey)
                 .variables(variables)
-                .send();
+                .send()
+                .join();
 
-        variables.put("processInstanceKey", event.join().getProcessInstanceKey());
         return variables;
     }
 }

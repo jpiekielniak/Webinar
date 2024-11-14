@@ -1,12 +1,12 @@
 package org.example.webinar.bmpn.api.service.webinar;
 
-import org.example.webinar.bmpn.api.model.request.PrereservationRequest;
-import org.example.webinar.bmpn.api.model.response.PrereservationResponse;
+import org.example.webinar.bmpn.api.entity.Reservation;
+import org.example.webinar.bmpn.api.entity.Webinar;
+
+import java.util.Optional;
 
 public interface WebinarService {
-    boolean isFreeSlot(String webinar);
-    String completeReservation(Long reservationId);
-    Long preBookReservation(PrereservationRequest prereservationRequest);
-    void deleteReservation(Long reservationId);
-
+    Optional<Boolean> isFreeSlot(Long webinarId);
+    Optional<Webinar> getById(Long webinarId);
+    Optional<Reservation> getReservation(Long webinarId);
 }
