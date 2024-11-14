@@ -47,13 +47,13 @@
 
         <label for="cardNumber">Numer karty:</label>
         <input type="text" id="cardNumber" name="cardNumber" required pattern="\d{16}"
-               placeholder="1234 5678 9012 3456">
+               placeholder="1234567890123456">
 
         <label for="expiryDate">Data ważności:</label>
         <input type="text" id="expiryDate" name="expiryDate" required placeholder="MM/RR" pattern="\d{2}/\d{2}">
 
-        <label for="cvc">Kod CVC:</label>
-        <input type="text" id="cvc" name="cvc" required pattern="\d{3}" placeholder="123">
+        <label for="code">Kod CVV / CVC:</label>
+        <input type="text" id="code" name="code" required pattern="\d{3}" placeholder="123">
 
         <button type="submit">Zapłać</button>
     </form>
@@ -107,7 +107,7 @@
             cardHolderName: $('#cardHolderName').val(),
             cardNumber: $('#cardNumber').val(),
             expiryDate: $('#expiryDate').val(),
-            cvc: $('#cvc').val(),
+            code: $('#code').val(),
             processInstanceKey: processInstanceKey
         };
 
