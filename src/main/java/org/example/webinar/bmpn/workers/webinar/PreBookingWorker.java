@@ -17,7 +17,7 @@ public class PreBookingWorker {
     private WebinarService webinarService;
 
     @JobWorker(type = "preBooking")
-    public Map<String, Object> preBooking(final JobClient client, final ActivatedJob job) {
+    public void preBooking(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
         var preReservationData = PrereservationRequest.builder()
@@ -29,8 +29,10 @@ public class PreBookingWorker {
 
         var preReservationId = webinarService.preBookReservation(preReservationData);
         jobResultVariables.put("preReservationId", preReservationId);
+        jobResultVariables.put("processInstanceKey", job.getProcessInstanceKey());
 
-
-        return jobResultVariables;
+        client.newCompleteCommand(job.getKey())
+                .variables(jobResultVariables)
+                .send();
     }
 }

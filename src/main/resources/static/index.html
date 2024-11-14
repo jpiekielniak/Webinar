@@ -64,6 +64,8 @@
 </div>
 
 <script>
+    let processInstanceKey;
+
     $('#webinarForm').on('submit', function (event) {
         event.preventDefault();
 
@@ -80,6 +82,8 @@
             type: 'POST',
             success: function (data) {
                 $('#webinarForm')[0].reset();
+
+                processInstanceKey = data.processInstanceKey;
 
                 $('#form').fadeOut(500, function () {
                     $('#success-message').html("Aplikacja zarejestrowana. Decyzja zostanie przekazana na podany adres email.");
@@ -103,10 +107,11 @@
             cardHolderName: $('#cardHolderName').val(),
             cardNumber: $('#cardNumber').val(),
             expiryDate: $('#expiryDate').val(),
-            cvc: $('#cvc').val()
+            cvc: $('#cvc').val(),
+            processInstanceKey: processInstanceKey
         };
 
-        $.ajax("/start", { //todo zmienić na /payment
+        $.ajax("/payment", { //todo zmienić na /payment
             data: JSON.stringify(paymentData),
             contentType: 'application/json',
             type: 'POST',
