@@ -97,11 +97,20 @@
       <bpmn:incoming>Flow_09cat7h</bpmn:incoming>
       <bpmn:outgoing>Flow_19dlyas</bpmn:outgoing>
     </bpmn:sendTask>
+    <bpmn:boundaryEvent id="Event_Reservation_Exception" name="Błąd rezerwacji" attachedToRef="Activity_PreBooking">
+      <bpmn:outgoing>Flow_0floh93</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1w2vbk9" errorRef="Error_0g84kmw" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="RESERVAT" name="Rezerwacja nie utworzona">
+      <bpmn:incoming>Flow_0floh93</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0floh93" sourceRef="Event_Reservation_Exception" targetRef="RESERVAT" />
   </bpmn:process>
   <bpmn:error id="Error_1g994ru" name="Error_FacultyUnavalible" errorCode="FACULTY_UNAVAILABLE" />
   <bpmn:error id="Error_0hv9p1k" name="Error_1fgerid" />
   <bpmn:error id="Error_0ehfjhb" name="Error_FacultyUnavailable" errorCode="Error_FacultyUnavailable" />
   <bpmn:error id="Error_1l46sz8" name="Error_FacultyUnavailble" errorCode="FACULTY_UNAVAILBLE" />
+  <bpmn:error id="Error_0g84kmw" name="ERROR_RESERVATION_NOT_CREATED" errorCode="RESERVATION_NOT_CREATED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="reservation-process">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_ReservationRequested">
@@ -164,6 +173,18 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_18th417_di" bpmnElement="Activity_Send_Confirm_Reservation_Email">
         <dc:Bounds x="1420" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1jjizig" bpmnElement="RESERVAT">
+        <dc:Bounds x="712" y="402" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="446" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11hanck_di" bpmnElement="Event_Reservation_Exception">
+        <dc:Bounds x="612" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="652" y="303" width="75" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0i3jw9h_di" bpmnElement="Flow_0i3jw9h">
         <di:waypoint x="208" y="407" />
@@ -233,6 +254,11 @@
       <bpmndi:BPMNEdge id="Flow_036uite_di" bpmnElement="Flow_036uite">
         <di:waypoint x="1230" y="407" />
         <di:waypoint x="1342" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0floh93_di" bpmnElement="Flow_0floh93">
+        <di:waypoint x="630" y="308" />
+        <di:waypoint x="630" y="420" />
+        <di:waypoint x="712" y="420" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

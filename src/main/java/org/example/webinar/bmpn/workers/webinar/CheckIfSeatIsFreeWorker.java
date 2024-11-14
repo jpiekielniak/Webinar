@@ -19,8 +19,10 @@ public class CheckIfSeatIsFreeWorker {
     public Map<String, Object> checkIfSeatIsFree(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
-        var isFreeSlot = webinarService.isFreeSlot(Long.parseLong(jobResultVariables.get("webinarId").toString()));
-        jobResultVariables.put("isFreeSpot", isFreeSlot);
+        var isFreeSlot = webinarService
+                .isFreeSlot(Long.parseLong(jobResultVariables.get("webinarId").toString()));
+
+        jobResultVariables.put("isFreeSpot", isFreeSlot.get());
 
         return jobResultVariables;
     }

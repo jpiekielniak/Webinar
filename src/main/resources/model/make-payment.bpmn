@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="a3b2585" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ab92ea9" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
   <bpmn:process id="make-payment" name="Pay Process" isExecutable="true">
     <bpmn:endEvent id="Event_PaymentCompleted" name="Zakończenie płatności">
       <bpmn:incoming>Flow_0t269lg</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="Gateway_ValidDataDecision" name="Dane poprawne?">
-      <bpmn:incoming>Flow_04a1cvj</bpmn:incoming>
-      <bpmn:outgoing>Flow_0jz1zif</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1j3kiym</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_04a1cvj" sourceRef="Activity_ValidateCreditCardData" targetRef="Gateway_ValidDataDecision" />
+    <bpmn:sequenceFlow id="Flow_04a1cvj" sourceRef="Activity_ValidateCreditCardData" targetRef="Activity_PayPreBooking" />
     <bpmn:serviceTask id="Activity_ValidateCreditCardData" name="Sprawdź poprawność wprowadzonych danych">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="validateCreditCardData" />
@@ -21,21 +16,15 @@
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="payPreBooking" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0jz1zif</bpmn:incoming>
+      <bpmn:incoming>Flow_04a1cvj</bpmn:incoming>
       <bpmn:outgoing>Flow_001kz35</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0jz1zif" name="Tak" sourceRef="Gateway_ValidDataDecision" targetRef="Activity_PayPreBooking">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isCreditCardDataValid = true</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_001kz35" sourceRef="Activity_PayPreBooking" targetRef="Activity_SendConfirmationPaymentEmail" />
     <bpmn:sequenceFlow id="Flow_0t269lg" sourceRef="Activity_SendConfirmationPaymentEmail" targetRef="Event_PaymentCompleted" />
     <bpmn:sequenceFlow id="Flow_0fbo7mh" sourceRef="payment-form" targetRef="Activity_ValidateCreditCardData" />
-    <bpmn:endEvent id="Event_1lzrzrg" name="Zakończenie płatności">
+    <bpmn:endEvent id="Event_1lzrzrg" name="Odrzucenie płatności">
       <bpmn:incoming>Flow_0stdcqw</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1j3kiym" name="Nie" sourceRef="Gateway_ValidDataDecision" targetRef="Activity_SendRejectedPaymentEmail">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isCreditCardDataValid=false</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0stdcqw" sourceRef="Activity_SendRejectedPaymentEmail" targetRef="Event_1lzrzrg" />
     <bpmn:intermediateCatchEvent id="payment-form" name="Przesłanie formularza z danymi płatniczymi">
       <bpmn:incoming>Flow_11y32xy</bpmn:incoming>
@@ -50,7 +39,7 @@
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="sendRejectedPaymentEmail" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1j3kiym</bpmn:incoming>
+      <bpmn:incoming>Flow_12kac85</bpmn:incoming>
       <bpmn:outgoing>Flow_0stdcqw</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sendTask id="Activity_SendConfirmationPaymentEmail" name="Wyślij e-mail z  potwierdzeniem płatności">
@@ -60,96 +49,91 @@
       <bpmn:incoming>Flow_001kz35</bpmn:incoming>
       <bpmn:outgoing>Flow_0t269lg</bpmn:outgoing>
     </bpmn:sendTask>
+    <bpmn:boundaryEvent id="Event_1duv2s2" name="Błędne dane płatnicze" attachedToRef="Activity_ValidateCreditCardData">
+      <bpmn:outgoing>Flow_12kac85</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0bvgwc5" errorRef="Error_1z10fa3" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_12kac85" sourceRef="Event_1duv2s2" targetRef="Activity_SendRejectedPaymentEmail" />
   </bpmn:process>
   <bpmn:message id="Message_33quqfo" name="paymentRequestMessage">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=processInstanceKey" />
     </bpmn:extensionElements>
   </bpmn:message>
+  <bpmn:error id="Error_1z10fa3" name="Error_Credit_Card_Not_Valid" errorCode="CREDIT_CARD_NOT_VALID" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="make-payment">
       <bpmndi:BPMNShape id="Event_0e2ysp1_di" bpmnElement="Event_PaymentCompleted">
-        <dc:Bounds x="1492" y="102" width="36" height="36" />
+        <dc:Bounds x="1312" y="100" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1479" y="145" width="63" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_02l0wqw_di" bpmnElement="Gateway_ValidDataDecision" isMarkerVisible="true">
-        <dc:Bounds x="875" y="243" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="939" y="258" width="84" height="14" />
+          <dc:Bounds x="1299" y="143" width="63" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vu3wu6_di" bpmnElement="Activity_ValidateCreditCardData">
-        <dc:Bounds x="630" y="228" width="100" height="80" />
+        <dc:Bounds x="620" y="78" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_10k885n" bpmnElement="Activity_PayPreBooking">
-        <dc:Bounds x="980" y="80" width="100" height="80" />
+        <dc:Bounds x="860" y="78" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1mqzfs3" bpmnElement="Event_1lzrzrg">
-        <dc:Bounds x="1322" y="432" width="36" height="36" />
+        <dc:Bounds x="932" y="302" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1309" y="475" width="63" height="27" />
+          <dc:Bounds x="922" y="345" width="57" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_07j42ll_di" bpmnElement="payment-form">
-        <dc:Bounds x="342" y="250" width="36" height="36" />
+        <dc:Bounds x="342" y="100" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="330" y="293" width="61" height="53" />
+          <dc:Bounds x="330" y="143" width="61" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1n4jzug_di" bpmnElement="Event_1n4jzug">
-        <dc:Bounds x="152" y="250" width="36" height="36" />
+        <dc:Bounds x="152" y="100" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="130" y="293" width="80" height="27" />
+          <dc:Bounds x="130" y="143" width="80" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1lys7a4_di" bpmnElement="Activity_SendRejectedPaymentEmail">
-        <dc:Bounds x="1020" y="410" width="100" height="80" />
+        <dc:Bounds x="730" y="280" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1r7jpbd_di" bpmnElement="Activity_SendConfirmationPaymentEmail">
-        <dc:Bounds x="1260" y="80" width="100" height="80" />
+        <dc:Bounds x="1080" y="78" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_04a1cvj_di" bpmnElement="Flow_04a1cvj">
-        <di:waypoint x="730" y="268" />
-        <di:waypoint x="875" y="268" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jz1zif_di" bpmnElement="Flow_0jz1zif">
-        <di:waypoint x="900" y="243" />
-        <di:waypoint x="900" y="120" />
-        <di:waypoint x="980" y="120" />
+      <bpmndi:BPMNShape id="Event_1duv2s2_di" bpmnElement="Event_1duv2s2">
+        <dc:Bounds x="602" y="140" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="931" y="179" width="18" height="14" />
+          <dc:Bounds x="530" y="144" width="62" height="27" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_001kz35_di" bpmnElement="Flow_001kz35">
-        <di:waypoint x="1080" y="120" />
-        <di:waypoint x="1260" y="120" />
-      </bpmndi:BPMNEdge>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0t269lg_di" bpmnElement="Flow_0t269lg">
-        <di:waypoint x="1360" y="120" />
-        <di:waypoint x="1492" y="120" />
+        <di:waypoint x="1180" y="118" />
+        <di:waypoint x="1312" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0fbo7mh_di" bpmnElement="Flow_0fbo7mh">
-        <di:waypoint x="378" y="268" />
-        <di:waypoint x="630" y="268" />
+        <di:waypoint x="378" y="118" />
+        <di:waypoint x="620" y="118" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1j3kiym_di" bpmnElement="Flow_1j3kiym">
-        <di:waypoint x="900" y="293" />
-        <di:waypoint x="900" y="450" />
-        <di:waypoint x="1020" y="450" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="931" y="369" width="17" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_04a1cvj_di" bpmnElement="Flow_04a1cvj">
+        <di:waypoint x="720" y="118" />
+        <di:waypoint x="860" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_001kz35_di" bpmnElement="Flow_001kz35">
+        <di:waypoint x="960" y="118" />
+        <di:waypoint x="1080" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0stdcqw_di" bpmnElement="Flow_0stdcqw">
-        <di:waypoint x="1120" y="450" />
-        <di:waypoint x="1322" y="450" />
+        <di:waypoint x="830" y="320" />
+        <di:waypoint x="932" y="320" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11y32xy_di" bpmnElement="Flow_11y32xy">
-        <di:waypoint x="188" y="268" />
-        <di:waypoint x="342" y="268" />
+        <di:waypoint x="188" y="118" />
+        <di:waypoint x="342" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12kac85_di" bpmnElement="Flow_12kac85">
+        <di:waypoint x="620" y="176" />
+        <di:waypoint x="620" y="320" />
+        <di:waypoint x="730" y="320" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
