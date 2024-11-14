@@ -5,7 +5,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.AllArgsConstructor;
 import org.example.webinar.bmpn.api.entity.ReservationStatus;
-import org.example.webinar.bmpn.api.model.request.CreditCard;
+import org.example.webinar.bmpn.api.model.CreditCard;
 import org.example.webinar.bmpn.api.service.payment.PaymentService;
 import org.example.webinar.bmpn.api.service.reservation.ReservationService;
 import org.springframework.stereotype.Component;

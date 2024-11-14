@@ -1,6 +1,6 @@
 package org.example.webinar.bmpn.api.service.payment;
 
-import org.example.webinar.bmpn.api.model.request.CreditCard;
+import org.example.webinar.bmpn.api.model.CreditCard;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

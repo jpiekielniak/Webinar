@@ -1,4 +1,4 @@
-package org.example.webinar.bmpn.api.model.request;
+package org.example.webinar.bmpn.api.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

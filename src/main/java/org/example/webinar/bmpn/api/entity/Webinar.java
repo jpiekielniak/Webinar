@@ -26,4 +26,5 @@ public class Webinar {
     private int maxSlots;
     private Double price;
     private boolean paid;
+    private boolean completed = false;
 }
