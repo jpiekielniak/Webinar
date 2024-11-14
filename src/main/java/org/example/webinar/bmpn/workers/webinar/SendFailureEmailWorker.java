@@ -18,7 +18,7 @@ public class SendFailureEmailWorker {
     public Map<String, Object> sendFailureEmail(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
-        var email = jobResultVariables.get("email").toString();
+        final var email = jobResultVariables.get("email").toString();
         emailService.sendFailureReservationEmail(email);
 
         return jobResultVariables;

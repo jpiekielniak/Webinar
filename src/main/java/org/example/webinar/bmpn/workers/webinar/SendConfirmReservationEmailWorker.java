@@ -18,7 +18,9 @@ public class SendConfirmReservationEmailWorker {
     @JobWorker(type = "sendConfirmReservationEmail")
     public Map<String, Object> sendConfirmReservationEmail(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
-        //Logika biznesowa - wysłanie e-maila z potwierdzeniem rezerwacji
+
+        final var email = jobResultVariables.get("email").toString();
+        emailService.sendConfirmReservationEmail(email);
 
         return jobResultVariables;
     }

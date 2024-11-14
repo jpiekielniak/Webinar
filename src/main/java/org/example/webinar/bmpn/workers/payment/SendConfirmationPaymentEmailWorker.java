@@ -19,7 +19,9 @@ public class SendConfirmationPaymentEmailWorker {
     public Map<String, Object> sendConfirmationPaymentEmail(final JobClient client, final ActivatedJob job) {
         var jobResultVariables = job.getVariablesAsMap();
 
-        //Logika biznesowa - wysłanie e-maila z potwierdzeniem płatności
+        final var email = jobResultVariables.get("email").toString();
+        emailService.sendConfirmPaymentEmail(email);
+
         return jobResultVariables;
     }
 }

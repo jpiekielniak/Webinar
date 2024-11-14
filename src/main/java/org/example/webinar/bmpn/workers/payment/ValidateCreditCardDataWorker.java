@@ -21,13 +21,13 @@ public class ValidateCreditCardDataWorker {
         var jobResultVariables = job.getVariablesAsMap();
 
         CreditCard creditCard = CreditCard.builder()
-                .name((String) job.getVariablesAsMap().get("firstName"))
-                .surname((String) job.getVariablesAsMap().get("lastName"))
+                .firstName((String) job.getVariablesAsMap().get("firstName"))
+                .lastName((String) job.getVariablesAsMap().get("lastName"))
                 .code((String) job.getVariablesAsMap().get("code"))
                 .expirationDate((String) job.getVariablesAsMap().get("expirationDate"))
                 .build();
-        paymentService.checkIsCreditCardValid(creditCard);
-        jobResultVariables.put("isCreditCardDataValid", false);
+        var isCreditCardValid = paymentService.checkIsCreditCardValid(creditCard);
+        jobResultVariables.put("isCreditCardDataValid", isCreditCardValid);
 
         return jobResultVariables;
     }
