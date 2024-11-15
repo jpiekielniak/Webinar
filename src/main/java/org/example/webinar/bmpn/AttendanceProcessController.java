@@ -14,19 +14,17 @@ public class AttendanceProcessController {
 
     @Qualifier("zeebeClientLifecycle")
     private ZeebeClient client;
-    private static final String MESSAGE = "attendanceRequestMessage";
+    private static final String BMPN_PROCESS_ID = "AttendanceAtTheWebinarProcess";
 
     @PostMapping("/attendance")
     public Map<String, Object> startPayment(@RequestBody Map<String, Object> variables) {
 
-        final var processInstanceKey = variables.get("processInstanceKey").toString();
-
-        client.newPublishMessageCommand()
-                .messageName(MESSAGE)
-                .correlationKey(processInstanceKey)
+        client
+                .newCreateInstanceCommand()
+                .bpmnProcessId(BMPN_PROCESS_ID)
+                .latestVersion()
                 .variables(variables)
-                .send()
-                .join();
+                .send();
 
         return variables;
     }
