@@ -74,6 +74,31 @@
             background-color: #ecf0f1;
         }
 
+        #pinInput {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #verifyPinButton {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #verifyPinButton:hover {
+            background-color: #2980b9;
+        }
+
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -87,20 +112,39 @@
 </head>
 <body>
 
-<h1>Wybierz webinar i zarządzaj uczestnikami</h1>
+<h1 id="codePin">Wprowadź kod PIN, aby uzyskać dostęp</h1>
+<input type="password" id="pinInput" placeholder="Wprowadź PIN">
+<button id="verifyPinButton" onclick="verifyPin()">Zweryfikuj PIN</button>
 
-<label for="webinarSelect">Wybierz webinar:</label>
-<select id="webinarSelect">
-    <option value="">Wybierz webinar</option>
-</select>
+<div id="content" style="display: none;">
+    <h1>Wybierz webinar i zarządzaj uczestnikami</h1>
 
-<button onclick="fetchParticipants()">Pobierz listę uczestników</button>
-<button onclick="sendEmails()" disabled id="sendEmailsButton">Wyślij listę maili</button>
+    <label for="webinarSelect">Wybierz webinar:</label>
+    <select id="webinarSelect">
+        <option value="">Wybierz webinar</option>
+    </select>
 
-<div id="participantsList">
+    <button onclick="fetchParticipants()">Pobierz listę uczestników</button>
+    <button onclick="sendEmails()" disabled id="sendEmailsButton">Wyślij listę maili</button>
+
+    <div id="participantsList">
+    </div>
 </div>
 
 <script>
+    function verifyPin() {
+        const pin = document.getElementById('pinInput').value;
+        if (pin === '1234') {
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('pinInput').style.display = 'none';
+            document.getElementById('verifyPinButton').style.display = 'none';
+            document.getElementById('codePin').style.display = 'none';
+            fetchWebinars();
+        } else {
+            alert('Niepoprawny kod PIN. Spróbuj ponownie.');
+        }
+    }
+
     async function fetchWebinars() {
         try {
             const response = await fetch('/api/webinars');
@@ -131,7 +175,7 @@
         }
 
         try {
-            const response = await fetch(`api/webinars/${selectedWebinarId}/participants`);
+            const response = await fetch(`/api/webinars/${selectedWebinarId}/participants`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -191,8 +235,6 @@
             console.error('Wystąpił błąd podczas wysyłania e-maili:', error);
         }
     }
-
-    window.onload = fetchWebinars;
 </script>
 
 </body>
