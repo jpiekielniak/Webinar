@@ -21,6 +21,6 @@ public class Reservation {
     private String email;
     private ReservationStatus status = ReservationStatus.PRERESERVED;
     @ManyToOne
-    @JoinColumn(name = "webinar_id")  // Foreign key column in Reservation table
+    @JoinColumn(name = "webinar_id")
     private Webinar webinar;
 }

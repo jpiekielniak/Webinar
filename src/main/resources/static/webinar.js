@@ -1,6 +1,24 @@
 let processInstanceKey;
 let success;
 
+const popupaleWebinars = async () => {
+  const response = await fetch('/api/webinars');
+  const data = await response.json();
+  const container = document.getElementById('webinarId');
+  container.innerHTML = '';
+
+  data.forEach(webinar => {
+    const webinarElement = document.createElement('option');
+    webinarElement.value = webinar.id;
+    webinarElement.textContent = webinar.title;
+    container.appendChild(webinarElement);
+  });
+  container.value = data[0].id;
+}
+
+// sfetchuj webinary i spopuluj selecta
+popupaleWebinars();
+
 // Obsługa formularza rejestracji
 document.getElementById('webinarForm').addEventListener('submit', function (event) {
   event.preventDefault();

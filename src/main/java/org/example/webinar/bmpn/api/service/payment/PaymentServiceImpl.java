@@ -7,9 +7,15 @@ import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
+    private static boolean isNotNullOrEmpty(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
 
     @Override
     public Optional<Boolean> checkIsCreditCardValid(CreditCard creditCard) {
-        return Optional.of(true);
+        return Optional.of(isNotNullOrEmpty(creditCard.getOwner()) &&
+                isNotNullOrEmpty(creditCard.getCardNumber()) &&
+                isNotNullOrEmpty(creditCard.getCode()) &&
+                isNotNullOrEmpty(creditCard.getExpirationDate()));
     }
 }

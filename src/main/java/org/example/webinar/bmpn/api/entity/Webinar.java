@@ -21,10 +21,9 @@ public class Webinar {
     private String title;
     private String description;
 
-    @OneToMany(mappedBy = "webinar", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "webinar", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Reservation> reservations;
-    private int maxSlots;
+    private int remainingSlots;
     private Double price;
-    private boolean paid;
     private boolean completed = false;
 }
