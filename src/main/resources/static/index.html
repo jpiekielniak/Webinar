@@ -63,70 +63,71 @@
     <h2>Płatność zakończona sukcesem. Dziękujemy!</h2>
 </div>
 
-<script>
-    let processInstanceKey;
+<!--<script>-->
+<!--    let processInstanceKey;-->
 
-    $('#webinarForm').on('submit', function (event) {
-        event.preventDefault();
+<!--    $('#webinarForm').on('submit', function (event) {-->
+<!--        event.preventDefault();-->
 
-        const formData = {
-            firstName: $('#firstName').val(),
-            lastName: $('#lastName').val(),
-            email: $('#email').val(),
-            webinarId: Number($('#webinarId').val())
-        };
+<!--        const formData = {-->
+<!--            firstName: $('#firstName').val(),-->
+<!--            lastName: $('#lastName').val(),-->
+<!--            email: $('#email').val(),-->
+<!--            webinarId: Number($('#webinarId').val())-->
+<!--        };-->
 
-        $.ajax("/start", {
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            type: 'POST',
-            success: function (data) {
-                $('#webinarForm')[0].reset();
+<!--        $.ajax("/start", {-->
+<!--            data: JSON.stringify(formData),-->
+<!--            contentType: 'application/json',-->
+<!--            type: 'POST',-->
+<!--            success: function (data) {-->
+<!--                $('#webinarForm')[0].reset();-->
 
-                processInstanceKey = data.processInstanceKey;
+<!--                processInstanceKey = data.processInstanceKey;-->
 
-                $('#form').fadeOut(500, function () {
-                    $('#success-message').html("Aplikacja zarejestrowana. Decyzja zostanie przekazana na podany adres email.");
-                    $('#success').fadeIn();
-                    $('#payButton').fadeIn();
-                });
-            }
-        });
-    });
+<!--                $('#form').fadeOut(500, function () {-->
+<!--                    $('#success-message').html("Aplikacja zarejestrowana. Decyzja zostanie przekazana na podany adres email.");-->
+<!--                    $('#success').fadeIn();-->
+<!--                    $('#payButton').fadeIn();-->
+<!--                });-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
 
-    $('#payButton').on('click', function () {
-        $('#success').fadeOut(500, function () {
-            $('#paymentForm').fadeIn();
-        });
-    });
+<!--    $('#payButton').on('click', function () {-->
+<!--        $('#success').fadeOut(500, function () {-->
+<!--            $('#paymentForm').fadeIn();-->
+<!--        });-->
+<!--    });-->
 
-    $('#creditCardForm').on('submit', function (event) {
-        event.preventDefault();
+<!--    $('#creditCardForm').on('submit', function (event) {-->
+<!--        event.preventDefault();-->
 
-        const paymentData = {
-            owner: $('#owner').val(),
-            cardNumber: $('#cardNumber').val(),
-            expiryDate: $('#expiryDate').val(),
-            code: $('#code').val(),
-            processInstanceKey: processInstanceKey
-        };
+<!--        const paymentData = {-->
+<!--            owner: $('#owner').val(),-->
+<!--            cardNumber: $('#cardNumber').val(),-->
+<!--            expiryDate: $('#expiryDate').val(),-->
+<!--            code: $('#code').val(),-->
+<!--            processInstanceKey: processInstanceKey-->
+<!--        };-->
 
-        $.ajax("/payment", {
-            data: JSON.stringify(paymentData),
-            contentType: 'application/json',
-            type: 'POST',
-            success: function (data) {
-                $('#creditCardForm')[0].reset();
-                $('#paymentForm').fadeOut(500, function () {
-                    $('#thankYouMessage').fadeIn();
-                });
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error("Błąd podczas przetwarzania płatności:", textStatus, errorThrown);
-                alert("Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.");
-            }
-        });
-    });
-</script>
+<!--        $.ajax("/payment", {-->
+<!--            data: JSON.stringify(paymentData),-->
+<!--            contentType: 'application/json',-->
+<!--            type: 'POST',-->
+<!--            success: function (data) {-->
+<!--                $('#creditCardForm')[0].reset();-->
+<!--                $('#paymentForm').fadeOut(500, function () {-->
+<!--                    $('#thankYouMessage').fadeIn();-->
+<!--                });-->
+<!--            },-->
+<!--            error: function (jqXHR, textStatus, errorThrown) {-->
+<!--                console.error("Błąd podczas przetwarzania płatności:", textStatus, errorThrown);-->
+<!--                alert("Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.");-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<script src="webinar.js"></script>
 </body>
 </html>
