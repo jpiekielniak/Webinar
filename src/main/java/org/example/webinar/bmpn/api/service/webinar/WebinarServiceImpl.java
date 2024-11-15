@@ -2,6 +2,7 @@ package org.example.webinar.bmpn.api.service.webinar;
 
 import org.example.webinar.bmpn.api.entity.Reservation;
 import org.example.webinar.bmpn.api.entity.Webinar;
+import org.example.webinar.bmpn.api.model.ParticipantInfo;
 import org.example.webinar.bmpn.api.repository.ReservationRepository;
 import org.example.webinar.bmpn.api.repository.WebinarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,13 @@ public class WebinarServiceImpl implements WebinarService {
     @Override
     public List<Webinar> getWebinarList() {
         return webinarRepository.findAll();
+    }
+
+    @Override
+    public List<ParticipantInfo> getWebinarParticipants(Long webinarId) {
+        return webinarRepository.getById(webinarId)
+                .getReservations()
+                .stream()
+                .map(reservation -> new ParticipantInfo(reservation.getFirstName() + " " + reservation.getLastName(), reservation.getEmail())).toList();
     }
 }

@@ -20,7 +20,8 @@ public class Reservation {
     private String lastName;
     private String email;
     private ReservationStatus status = ReservationStatus.PRERESERVED;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "webinar_id")
     private Webinar webinar;
 }

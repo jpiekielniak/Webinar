@@ -103,7 +103,7 @@
 <script>
     async function fetchWebinars() {
         try {
-            const response = await fetch('http://localhost:8080/webinars');
+            const response = await fetch('/api/webinars');
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -131,7 +131,7 @@
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/webinars/${selectedWebinarId}/participants`);
+            const response = await fetch(`api/webinars/${selectedWebinarId}/participants`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -148,11 +148,11 @@
                 checkbox.className = 'participantCheckbox';
 
                 const label = document.createElement('label');
-                label.textContent = `${participant.firstName} ${participant.lastName}`;
+                label.textContent = participant.fullName;
                 label.appendChild(checkbox);
 
                 listItem.appendChild(checkbox);
-                listItem.appendChild(document.createTextNode(`${participant.firstName} ${participant.lastName}`));
+                listItem.appendChild(document.createTextNode(participant.fullName));
                 participantsList.appendChild(listItem);
             });
 
@@ -174,7 +174,7 @@
         }
 
         try {
-            const response = await fetch('http://localhost:8080/attendance', {
+            const response = await fetch('api/attendance', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

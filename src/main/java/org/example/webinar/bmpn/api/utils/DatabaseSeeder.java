@@ -1,5 +1,7 @@
 package org.example.webinar.bmpn.api.utils;
 
+import org.example.webinar.bmpn.api.entity.Reservation;
+import org.example.webinar.bmpn.api.entity.ReservationStatus;
 import org.example.webinar.bmpn.api.entity.Webinar;
 import org.example.webinar.bmpn.api.repository.ReservationRepository;
 import org.example.webinar.bmpn.api.repository.WebinarRepository;
@@ -79,6 +81,27 @@ public class DatabaseSeeder implements CommandLineRunner {
                         .completed(false)
                         .build()
         );
+
+        reservationRepository.save(
+                Reservation.builder()
+                        .email("jakubpiekielniak123@gmail.com")
+                        .firstName("Jakub")
+                        .lastName("Piekielniak")
+                        .webinar(webinarRepository.getById(1L))
+                        .status(ReservationStatus.PAYED)
+                        .build()
+        );
+
+        reservationRepository.save(
+                Reservation.builder()
+                        .email("arkadiusz.kupiec98@gmail.com")
+                        .firstName("Arkadiusz")
+                        .lastName("Kupiec")
+                        .webinar(webinarRepository.getById(1L))
+                        .status(ReservationStatus.PAYED)
+                        .build()
+        );
+
         System.out.println("Dane zostały zainicjalizowane w bazie danych.");
     }
 }

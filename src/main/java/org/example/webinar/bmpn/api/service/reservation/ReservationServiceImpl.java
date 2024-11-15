@@ -5,6 +5,7 @@ import org.example.webinar.bmpn.api.entity.ReservationStatus;
 import org.example.webinar.bmpn.api.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    @Transactional
     public void changeReservationStatus(Long reservationId, ReservationStatus newStatus) {
         reservationRepository.getById(reservationId).setStatus(newStatus);
     }
