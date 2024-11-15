@@ -18,45 +18,44 @@ public class EmailServiceImpl implements EmailService {
     private static final String FAILURE_RESERVATION_EMAIL = "failure-reservation-email.html";
     private static final String CONFIRM_PAYMENT_EMAIL = "confirm-payment-email.html";
     private static final String REJECTED_PAYMENT_EMAIL = "rejected-payment-email.html";
+    private static final String ATTENDANCE_THANK_EMAIL = "thank-email.html";
 
     @Override
     public void sendConfirmReservationEmail(String to) {
-        var context = new Context();
-        var emailContent = templateEngine.process(CONFIRM_RESERVATION_EMAIL, context);
-
+        var emailContent = createEmailTemplate(CONFIRM_RESERVATION_EMAIL);
         sendHtmlEmail(to, "Potwierdzenie rezerwacji", emailContent);
     }
 
     @Override
     public void sendFailureReservationEmail(String to) {
-        var context = new Context();
-        var emailContent = templateEngine.process(FAILURE_RESERVATION_EMAIL, context);
-
+        var emailContent = createEmailTemplate(FAILURE_RESERVATION_EMAIL);
         sendHtmlEmail(to, "Rezerwacja odrzucona", emailContent);
     }
 
     @Override
     public void sendConfirmPaymentEmail(String to) {
-        var context = new Context();
-        var emailContent = templateEngine.process(CONFIRM_PAYMENT_EMAIL, context);
-
+        var emailContent = createEmailTemplate(CONFIRM_PAYMENT_EMAIL);
         sendHtmlEmail(to, "Potwierdzenie płatności", emailContent);
     }
 
     @Override
     public void sendRejectedPaymentEmail(String to) {
-        var context = new Context();
-        var emailContent = templateEngine.process(REJECTED_PAYMENT_EMAIL, context);
-
+        var emailContent = createEmailTemplate(REJECTED_PAYMENT_EMAIL);
         sendHtmlEmail(to, "Płatność odrzucona", emailContent);
     }
 
     @Override
     public void sendThankEmail(String to) {
         var context = new Context();
-        var emailContent = templateEngine.process("thank-email.html", context);
+        var emailContent = templateEngine.process(ATTENDANCE_THANK_EMAIL, context);
 
         sendHtmlEmail(to, "Dziękujemy za udział w webinarze!", emailContent);
+    }
+
+    private String createEmailTemplate(String templateName)
+    {
+        var context = new Context();
+        return templateEngine.process(templateName, context);
     }
 
     private void sendHtmlEmail(String to, String subject, String content) {
