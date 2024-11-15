@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_00rwpxz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ab92ea9" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0" camunda:diagramRelationId="fc823716-113b-48eb-8a29-7d277d662f00">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_00rwpxz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ab92ea9" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0" camunda:diagramRelationId="fc823716-113b-48eb-8a29-7d277d662f00">
   <bpmn:process id="reservation-process" name="Reservation Process" isExecutable="true">
     <bpmn:extensionElements />
     <bpmn:startEvent id="StartEvent_ReservationRequested" name="Wysłanie formularza z danymi">
@@ -14,7 +14,7 @@
         <zeebe:taskDefinition type="checkIfSeatIsFree" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0i3jw9h</bpmn:incoming>
-      <bpmn:outgoing>Flow_1w6gxlj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1vt2k3l</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0i3jw9h" sourceRef="StartEvent_ReservationRequested" targetRef="Activity_CheckIfSeatIsFree" />
     <bpmn:exclusiveGateway id="Gateway_PaymentDecision" name="Zapłacono?">
@@ -30,25 +30,13 @@
       <bpmn:incoming>Flow_1wvyqiq</bpmn:incoming>
       <bpmn:outgoing>Flow_036uite</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_0gwz8fg" name="Wolne miejsca?">
-      <bpmn:incoming>Flow_1w6gxlj</bpmn:incoming>
-      <bpmn:outgoing>Flow_0w8d227</bpmn:outgoing>
-      <bpmn:outgoing>Flow_01koz73</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1w6gxlj" sourceRef="Activity_CheckIfSeatIsFree" targetRef="Gateway_0gwz8fg" />
-    <bpmn:sequenceFlow id="Flow_0w8d227" name="Nie" sourceRef="Gateway_0gwz8fg" targetRef="Activity_SendFailureEmail">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isFreeSpot=false</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_PreBooking" name="Wstępna rezerwacja">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="preBooking" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_01koz73</bpmn:incoming>
+      <bpmn:incoming>Flow_1vt2k3l</bpmn:incoming>
       <bpmn:outgoing>Flow_18le6kj</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_01koz73" name="Tak" sourceRef="Gateway_0gwz8fg" targetRef="Activity_PreBooking">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=isFreeSpot=true</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_18le6kj" sourceRef="Activity_PreBooking" targetRef="Activity_Pay" />
     <bpmn:serviceTask id="Activity_CompleteReservation" name="Rezerwacja miejsca na webinarze">
       <bpmn:extensionElements>
@@ -87,7 +75,7 @@
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="sendFailureEmail" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0w8d227</bpmn:incoming>
+      <bpmn:incoming>Flow_0cqcob6</bpmn:incoming>
       <bpmn:outgoing>Flow_1jdes7f</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sendTask id="Activity_Send_Confirm_Reservation_Email" name="Wyślij wiadomość email z potwierdzeniem">
@@ -105,12 +93,19 @@
       <bpmn:incoming>Flow_0floh93</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0floh93" sourceRef="Event_Reservation_Exception" targetRef="RESERVAT" />
+    <bpmn:boundaryEvent id="Event_1j2u65i" name="Brak miejsc" attachedToRef="Activity_CheckIfSeatIsFree">
+      <bpmn:outgoing>Flow_0cqcob6</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0t5q4jz" errorRef="Error_048i3v3" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0cqcob6" sourceRef="Event_1j2u65i" targetRef="Activity_SendFailureEmail" />
+    <bpmn:sequenceFlow id="Flow_1vt2k3l" sourceRef="Activity_CheckIfSeatIsFree" targetRef="Activity_PreBooking" />
   </bpmn:process>
   <bpmn:error id="Error_1g994ru" name="Error_FacultyUnavalible" errorCode="FACULTY_UNAVAILABLE" />
   <bpmn:error id="Error_0hv9p1k" name="Error_1fgerid" />
   <bpmn:error id="Error_0ehfjhb" name="Error_FacultyUnavailable" errorCode="Error_FacultyUnavailable" />
   <bpmn:error id="Error_1l46sz8" name="Error_FacultyUnavailble" errorCode="FACULTY_UNAVAILBLE" />
   <bpmn:error id="Error_0g84kmw" name="ERROR_RESERVATION_NOT_CREATED" errorCode="RESERVATION_NOT_CREATED" />
+  <bpmn:error id="Error_048i3v3" name="ERROR_NO_FREE_SLOT" errorCode="NO_FREE_SLOT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="reservation-process">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_ReservationRequested">
@@ -125,10 +120,6 @@
           <dc:Bounds x="1619" y="202" width="63" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wn41hj_di" bpmnElement="Activity_CheckIfSeatIsFree">
-        <dc:Bounds x="270" y="367" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1gylx8r_di" bpmnElement="Gateway_PaymentDecision" isMarkerVisible="true">
         <dc:Bounds x="1005" y="225" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -138,12 +129,6 @@
       <bpmndi:BPMNShape id="Activity_008gpri_di" bpmnElement="Activity_RemovePreBooking">
         <dc:Bounds x="1130" y="367" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_03lf0w4" bpmnElement="Gateway_0gwz8fg" isMarkerVisible="true">
-        <dc:Bounds x="455" y="382" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="392" y="373" width="78" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1x5blkq" bpmnElement="Activity_PreBooking">
         <dc:Bounds x="550" y="210" width="100" height="80" />
@@ -156,20 +141,11 @@
       <bpmndi:BPMNShape id="Activity_16qfdvq_di" bpmnElement="Activity_Pay">
         <dc:Bounds x="790" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_00jiijb" bpmnElement="Event_WebinarOff">
-        <dc:Bounds x="582" y="682" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="570" y="728" width="60" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1l8krge" bpmnElement="Event_RemovePreBooking">
         <dc:Bounds x="1342" y="389" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1334" y="339" width="54" height="40" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0izyi3n_di" bpmnElement="Activity_SendFailureEmail">
-        <dc:Bounds x="550" y="490" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_18th417_di" bpmnElement="Activity_Send_Confirm_Reservation_Email">
         <dc:Bounds x="1420" y="80" width="100" height="80" />
@@ -180,41 +156,42 @@
           <dc:Bounds x="692" y="446" width="76" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wn41hj_di" bpmnElement="Activity_CheckIfSeatIsFree">
+        <dc:Bounds x="270" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0izyi3n_di" bpmnElement="Activity_SendFailureEmail">
+        <dc:Bounds x="440" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_00jiijb" bpmnElement="Event_WebinarOff">
+        <dc:Bounds x="472" y="622" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="460" y="668" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_11hanck_di" bpmnElement="Event_Reservation_Exception">
         <dc:Bounds x="612" y="272" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="652" y="303" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1j2u65i_di" bpmnElement="Event_1j2u65i">
+        <dc:Bounds x="332" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="371" y="303" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0i3jw9h_di" bpmnElement="Flow_0i3jw9h">
         <di:waypoint x="208" y="407" />
-        <di:waypoint x="270" y="407" />
+        <di:waypoint x="239" y="407" />
+        <di:waypoint x="239" y="250" />
+        <di:waypoint x="270" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1apvgc0_di" bpmnElement="Flow_1apvgc0">
         <di:waypoint x="890" y="250" />
         <di:waypoint x="1005" y="250" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="919" y="232" width="58" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1w6gxlj_di" bpmnElement="Flow_1w6gxlj">
-        <di:waypoint x="370" y="407" />
-        <di:waypoint x="455" y="407" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0w8d227_di" bpmnElement="Flow_0w8d227">
-        <di:waypoint x="480" y="432" />
-        <di:waypoint x="480" y="530" />
-        <di:waypoint x="550" y="530" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="491" y="476" width="17" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01koz73_di" bpmnElement="Flow_01koz73">
-        <di:waypoint x="480" y="382" />
-        <di:waypoint x="480" y="250" />
-        <di:waypoint x="550" y="250" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="491" y="293" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18le6kj_di" bpmnElement="Flow_18le6kj">
@@ -248,8 +225,8 @@
         <di:waypoint x="1632" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jdes7f_di" bpmnElement="Flow_1jdes7f">
-        <di:waypoint x="600" y="570" />
-        <di:waypoint x="600" y="682" />
+        <di:waypoint x="490" y="460" />
+        <di:waypoint x="490" y="622" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_036uite_di" bpmnElement="Flow_036uite">
         <di:waypoint x="1230" y="407" />
@@ -259,6 +236,15 @@
         <di:waypoint x="630" y="308" />
         <di:waypoint x="630" y="420" />
         <di:waypoint x="712" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cqcob6_di" bpmnElement="Flow_0cqcob6">
+        <di:waypoint x="350" y="308" />
+        <di:waypoint x="350" y="420" />
+        <di:waypoint x="440" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vt2k3l_di" bpmnElement="Flow_1vt2k3l">
+        <di:waypoint x="370" y="250" />
+        <di:waypoint x="550" y="250" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

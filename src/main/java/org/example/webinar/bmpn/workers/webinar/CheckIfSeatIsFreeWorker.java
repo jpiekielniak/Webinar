@@ -22,7 +22,13 @@ public class CheckIfSeatIsFreeWorker {
         var isFreeSlot = webinarService
                 .isFreeSlot(Long.parseLong(jobResultVariables.get("webinarId").toString()));
 
-        jobResultVariables.put("isFreeSpot", isFreeSlot.get());
+        if(!isFreeSlot.get())
+        {
+            client.newThrowErrorCommand(job.getKey())
+                    .errorCode("NO_FREE_SLOT")
+                    .send()
+                    .join();
+        }
 
         return jobResultVariables;
     }
