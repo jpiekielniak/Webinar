@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ab92ea9" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:process id="Process_1q27y5q" name="attendance-at-the-webinar" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Zainicjowano proces obecności na webinarze">
+      <bpmn:outgoing>Flow_1e7jzjk</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="Event_1c0p9et" name="Przesłanie listy obecności">
+      <bpmn:incoming>Flow_1e7jzjk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nrj2wm</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_18kra5i" messageRef="Message_2bvs3ql" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1e7jzjk" sourceRef="StartEvent_1" targetRef="Event_1c0p9et" />
+    <bpmn:serviceTask id="Activity_1t1m43g" name="Wyślij wiadomość e-mail do uczestników webinaru">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="sendThankEmail" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0nrj2wm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0e7dxoy</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0nrj2wm" sourceRef="Event_1c0p9et" targetRef="Activity_1t1m43g" />
+    <bpmn:endEvent id="Event_0olt5uw" name="Zakończenie procesu">
+      <bpmn:incoming>Flow_0e7dxoy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0e7dxoy" sourceRef="Activity_1t1m43g" targetRef="Event_0olt5uw" />
+    <bpmn:boundaryEvent id="Event_16xmqaq" name="Błąd podczas wysłania e-maili" attachedToRef="Activity_1t1m43g">
+      <bpmn:outgoing>Flow_0cof2fd</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_04zcrmb" errorRef="Error_0irfnb3" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_033j60i" name="Zakończenie procesu">
+      <bpmn:incoming>Flow_0cof2fd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0cof2fd" sourceRef="Event_16xmqaq" targetRef="Event_033j60i" />
+  </bpmn:process>
+  <bpmn:message id="Message_2bvs3ql" name="attendanceRequestMessage">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=processInstanceKey" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:error id="Error_0irfnb3" name="Error_Send_Thank_Email" errorCode="SEND_THANK_EMAIL_FAILURE" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1q27y5q">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="145" width="86" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0axa02u_di" bpmnElement="Event_1c0p9et">
+        <dc:Bounds x="422" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="403" y="151" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15bxufs_di" bpmnElement="Event_0olt5uw">
+        <dc:Bounds x="1032" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1018" y="151" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0bbc4vo" bpmnElement="Event_033j60i">
+        <dc:Bounds x="922" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="908" y="351" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vinhb5_di" bpmnElement="Activity_1t1m43g">
+        <dc:Bounds x="670" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16xmqaq_di" bpmnElement="Event_16xmqaq">
+        <dc:Bounds x="752" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="798" y="146" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1e7jzjk_di" bpmnElement="Flow_1e7jzjk">
+        <di:waypoint x="218" y="120" />
+        <di:waypoint x="422" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nrj2wm_di" bpmnElement="Flow_0nrj2wm">
+        <di:waypoint x="458" y="120" />
+        <di:waypoint x="670" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e7dxoy_di" bpmnElement="Flow_0e7dxoy">
+        <di:waypoint x="770" y="120" />
+        <di:waypoint x="1032" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cof2fd_di" bpmnElement="Flow_0cof2fd">
+        <di:waypoint x="770" y="178" />
+        <di:waypoint x="770" y="320" />
+        <di:waypoint x="922" y="320" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

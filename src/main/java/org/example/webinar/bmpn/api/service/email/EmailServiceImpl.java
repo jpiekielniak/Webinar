@@ -51,6 +51,14 @@ public class EmailServiceImpl implements EmailService {
         sendHtmlEmail(to, "Płatność odrzucona", emailContent);
     }
 
+    @Override
+    public void sendThankEmail(String to) {
+        var context = new Context();
+        var emailContent = templateEngine.process("thank-email.html", context);
+
+        sendHtmlEmail(to, "Dziękujemy za udział w webinarze!", emailContent);
+    }
+
     private void sendHtmlEmail(String to, String subject, String content) {
         try {
             var message = javaMailSender.createMimeMessage();

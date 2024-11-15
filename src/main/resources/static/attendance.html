@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Webinar Participants</title>
+</head>
+<body>
+
+<h1>Wybierz webinar i zarządzaj uczestnikami</h1>
+
+<label for="webinarSelect">Wybierz webinar:</label>
+<select id="webinarSelect">
+    <option value="">Wybierz webinar</option>
+</select>
+
+<button onclick="fetchParticipants()">Pobierz listę uczestników</button>
+<button onclick="sendEmails()" disabled id="sendEmailsButton">Wyślij listę maili</button>
+
+<ul id="participantsList">
+</ul>
+
+<script>
+    async function fetchWebinars() {
+        try {
+            const response = await fetch('http://localhost:8080/webinars');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const webinars = await response.json();
+
+            const webinarSelect = document.getElementById('webinarSelect');
+            webinars.forEach(webinar => {
+                const option = document.createElement('option');
+                option.value = webinar.id;
+                option.textContent = webinar.title;
+                webinarSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Wystąpił błąd podczas pobierania webinarów:', error);
+        }
+    }
+
+    async function fetchParticipants() {
+        const webinarSelect = document.getElementById('webinarSelect');
+        const selectedWebinarId = webinarSelect.value;
+
+        if (!selectedWebinarId) {
+            alert('Wybierz webinar przed pobraniem uczestników.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/webinars/${selectedWebinarId}/participants`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const participants = await response.json();
+
+            const participantsList = document.getElementById('participantsList');
+            participantsList.innerHTML = '';
+
+            participants.forEach(participant => {
+                const listItem = document.createElement('li');
+                listItem.textContent = participant.email;
+                participantsList.appendChild(listItem);
+            });
+
+            window.participantEmails = participants.map(participant => participant.email);
+
+            document.getElementById('sendEmailsButton').disabled = false;
+        } catch (error) {
+            console.error('Wystąpił błąd podczas pobierania uczestników:', error);
+        }
+    }
+
+    async function sendEmails() {
+        if (!window.participantEmails || window.participantEmails.length === 0) {
+            alert('Brak uczestników do wysłania.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/attendance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ emails: window.participantEmails })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            alert('Lista e-maili została pomyślnie wysłana.');
+        } catch (error) {
+            console.error('Wystąpił błąd podczas wysyłania e-maili:', error);
+        }
+    }
+
+    window.onload = fetchWebinars;
+</script>
+
+</body>
+</html>
