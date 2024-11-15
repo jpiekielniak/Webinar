@@ -28,10 +28,12 @@ document.getElementById('webinarForm').addEventListener('submit', function (even
       processInstanceKey = data.processInstanceKey;
 
       // Nasłuchiwanie na odpowiedź z backendu
-      const eventSource = new EventSource(`/subscribe?processInstanceKey=${processInstanceKey}`);
+      const eventSource = new EventSource(`/api/subscribe?processInstanceKey=${processInstanceKey}`);
 
-      eventSource.onmessage = function (event) {
+      eventSource.onmessage = async function (event) {
+        console.log(event.data);
         const data = JSON.parse(event.data);
+        await new Promise(resolve => setTimeout(resolve, 1000));
         if (data.success === true) {
           success = true;
           console.log("Otrzymano pozytywną odpowiedź");
