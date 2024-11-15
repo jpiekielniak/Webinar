@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.example.webinar.bmpn.api.entity.Reservation;
 import org.example.webinar.bmpn.api.service.reservation.ReservationService;
 import org.example.webinar.bmpn.api.service.webinar.WebinarService;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -19,7 +21,7 @@ public class PreBookingWorker {
     private ReservationService reservationService;
 
     @JobWorker(type = "preBooking")
-    public Map<String, Object> preBooking(final JobClient client, final ActivatedJob job) {
+    public Map<String, Object> preBooking(final JobClient client, final ActivatedJob job) throws JSONException {
         var jobResultVariables = job.getVariablesAsMap();
 
         final var webinarId = Long.parseLong(jobResultVariables.get("webinarId").toString());
@@ -46,6 +48,13 @@ public class PreBookingWorker {
 
         jobResultVariables.put("reservationId", reservationId);
         jobResultVariables.put("processInstanceKey", job.getProcessInstanceKey());
+
+        // tutaj wysyłamy wiadomość do nasłuchiwacza
+        String instanceKey = String.valueOf(job.getProcessInstanceKey());
+        JSONObject message = new JSONObject();
+        message.put("success", true);
+        reservationService.sendMessageToListener(instanceKey, message.toString());
+        reservationService.removeListener(instanceKey);
 
         return jobResultVariables;
     }
