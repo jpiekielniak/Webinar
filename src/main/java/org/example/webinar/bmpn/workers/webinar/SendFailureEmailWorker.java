@@ -5,6 +5,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.AllArgsConstructor;
 import org.example.webinar.bmpn.api.service.email.EmailService;
+import org.example.webinar.bmpn.api.service.emitter.EmitterService;
 import org.example.webinar.bmpn.api.service.reservation.ReservationService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,8 +16,10 @@ import java.util.Map;
 @Component
 @AllArgsConstructor
 public class SendFailureEmailWorker {
+
     private EmailService emailService;
     private ReservationService reservationService;
+    private EmitterService emitterService;
 
     @JobWorker(type = "sendFailureEmail")
     public Map<String, Object> sendFailureEmail(final JobClient client, final ActivatedJob job) throws JSONException {
@@ -25,12 +28,14 @@ public class SendFailureEmailWorker {
         final var email = jobResultVariables.get("email").toString();
         emailService.sendFailureReservationEmail(email);
 
-        String instanceKey = String.valueOf(job.getProcessInstanceKey());
+        emmitMessage(String.valueOf(job.getProcessInstanceKey()));
+        return jobResultVariables;
+    }
+
+    private void emmitMessage(String instanceKey) throws JSONException {
         JSONObject message = new JSONObject();
         message.put("success", false);
-        reservationService.sendMessageToListener(instanceKey, message.toString());
-        reservationService.removeListener(instanceKey);
-
-        return jobResultVariables;
+        emitterService.sendMessageToListener(instanceKey, message.toString());
+        emitterService.removeListener(instanceKey);
     }
 }

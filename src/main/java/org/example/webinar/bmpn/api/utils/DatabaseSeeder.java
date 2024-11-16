@@ -20,7 +20,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private ReservationRepository reservationRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         webinarRepository.save(
                 Webinar.builder()
                         .price(2d)
@@ -88,7 +88,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                         .firstName("Jakub")
                         .lastName("Piekielniak")
                         .webinar(webinarRepository.getById(1L))
-                        .status(ReservationStatus.PAYED)
+                        .status(ReservationStatus.COMPLETED)
                         .build()
         );
 
@@ -98,7 +98,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                         .firstName("Arkadiusz")
                         .lastName("Kupiec")
                         .webinar(webinarRepository.getById(1L))
-                        .status(ReservationStatus.PAYED)
+                        .status(ReservationStatus.COMPLETED)
                         .build()
         );
 

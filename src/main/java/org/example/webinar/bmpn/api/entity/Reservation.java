@@ -1,10 +1,6 @@
 package org.example.webinar.bmpn.api.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import javax.persistence.*;
 
 @Entity
@@ -19,7 +15,7 @@ public class Reservation {
     private String firstName;
     private String lastName;
     private String email;
-    private ReservationStatus status = ReservationStatus.PRERESERVED;
+    private ReservationStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "webinar_id")

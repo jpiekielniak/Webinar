@@ -1,14 +1,15 @@
 package org.example.webinar.bmpn.workers.webinar;
 
+import org.example.webinar.bmpn.api.service.emitter.EmitterService;
+import org.json.*;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import lombok.AllArgsConstructor;
 import org.example.webinar.bmpn.api.entity.Reservation;
+import org.example.webinar.bmpn.api.entity.ReservationStatus;
 import org.example.webinar.bmpn.api.service.reservation.ReservationService;
 import org.example.webinar.bmpn.api.service.webinar.WebinarService;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -19,6 +20,7 @@ public class PreBookingWorker {
 
     private WebinarService webinarService;
     private ReservationService reservationService;
+    private EmitterService emitterService;
 
     @JobWorker(type = "preBooking")
     public Map<String, Object> preBooking(final JobClient client, final ActivatedJob job) throws JSONException {
@@ -32,6 +34,7 @@ public class PreBookingWorker {
                 .firstName(jobResultVariables.get("firstName").toString())
                 .lastName(jobResultVariables.get("lastName").toString())
                 .email(jobResultVariables.get("email").toString())
+                .status(ReservationStatus.PRERESERVED)
                 .webinar(webinar.get())
                 .build();
 
@@ -49,13 +52,15 @@ public class PreBookingWorker {
         jobResultVariables.put("reservationId", reservationId);
         jobResultVariables.put("processInstanceKey", job.getProcessInstanceKey());
 
-        // tutaj wysyłamy wiadomość do nasłuchiwacza
-        String instanceKey = String.valueOf(job.getProcessInstanceKey());
-        JSONObject message = new JSONObject();
-        message.put("success", true);
-        reservationService.sendMessageToListener(instanceKey, message.toString());
-        reservationService.removeListener(instanceKey);
+        emmitMessage(String.valueOf(job.getProcessInstanceKey()));
 
         return jobResultVariables;
+    }
+
+    private void emmitMessage(String instanceKey) throws JSONException {
+        var message = new JSONObject();
+        message.put("success", true);
+        emitterService.sendMessageToListener(instanceKey, message.toString());
+        emitterService.removeListener(instanceKey);
     }
 }
