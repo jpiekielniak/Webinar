@@ -14,4 +14,6 @@ public interface WebinarService {
     List<Webinar> getWebinarList();
 
     List<ParticipantInfo> getWebinarParticipants(Long webinarId);
+
+    void changeWebinarStatus(Long webinarId, boolean isCompleted);
 }

@@ -208,6 +208,8 @@
 
     async function sendEmails() {
         const checkboxes = document.querySelectorAll('.participantCheckbox');
+        const webinarId = document.getElementById('webinarSelect').value;
+
         const selectedEmails = Array.from(checkboxes)
             .filter(checkbox => checkbox.checked)
             .map(checkbox => checkbox.value);
@@ -223,7 +225,9 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ emails: selectedEmails })
+                body: JSON.stringify({
+                    webinarId : webinarId,
+                    emails: selectedEmails })
             });
 
             if (!response.ok) {

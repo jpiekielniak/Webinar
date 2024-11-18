@@ -48,4 +48,10 @@ public class WebinarServiceImpl implements WebinarService {
                 .stream()
                 .map(reservation -> new ParticipantInfo(reservation.getFirstName() + " " + reservation.getLastName(), reservation.getEmail())).toList();
     }
+
+    @Override
+    @Transactional
+    public void changeWebinarStatus(Long webinarId, boolean isCompleted) {
+        webinarRepository.getById(webinarId).setCompleted(isCompleted);
+    }
 }

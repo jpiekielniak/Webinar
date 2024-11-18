@@ -23,9 +23,10 @@ public class DatabaseSeeder implements CommandLineRunner {
     public void run(String... args) {
         webinarRepository.save(
                 Webinar.builder()
+                        .id(1L)
                         .price(2d)
                         .title("Programowanie w Haskell")
-                        .description("Dla sadystów")
+                        .description("Kurs dla początkujących")
                         .remainingSlots(20)
                         .reservations(Collections.emptyList())
                         .completed(false)
@@ -33,6 +34,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         );
         webinarRepository.save(
                 Webinar.builder()
+                        .id(2L)
                         .price(120.50d)
                         .title("Nowoczesny HTML")
                         .description("Potężny HTML dla nowicjiuszy")
@@ -43,9 +45,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         );
         webinarRepository.save(
                 Webinar.builder()
+                        .id(3L)
                         .price(20d)
                         .title("Docker w praktyce")
-                        .description("Dla sadystów")
+                        .description("Kurs dla początkujących")
                         .remainingSlots(20)
                         .reservations(Collections.emptyList())
                         .completed(false)
@@ -53,9 +56,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         );
         webinarRepository.save(
                 Webinar.builder()
+                        .id(4L)
                         .price(20d)
                         .title("Azure od postaw")
-                        .description("Dla sadystów")
+                        .description("Kurs dla początkujących")
                         .remainingSlots(1)
                         .reservations(Collections.emptyList())
                         .completed(false)
@@ -63,9 +67,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         );
         webinarRepository.save(
                 Webinar.builder()
+                        .id(5L)
                         .price(20d)
                         .title("Mikroserwisy w .NET")
-                        .description("Dla sadystów")
+                        .description("Samouczek")
                         .remainingSlots(20)
                         .reservations(Collections.emptyList())
                         .completed(false)
@@ -75,7 +80,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 Webinar.builder()
                         .price(20d)
                         .title("Databricks - wprowadzenie")
-                        .description("Dla sadystów")
+                        .description("Kurs od postaw")
                         .remainingSlots(0)
                         .reservations(Collections.emptyList())
                         .completed(false)
@@ -87,16 +92,6 @@ public class DatabaseSeeder implements CommandLineRunner {
                         .email("jakubpiekielniak123@gmail.com")
                         .firstName("Jakub")
                         .lastName("Piekielniak")
-                        .webinar(webinarRepository.getById(1L))
-                        .status(ReservationStatus.COMPLETED)
-                        .build()
-        );
-
-        reservationRepository.save(
-                Reservation.builder()
-                        .email("arkadiusz.kupiec98@gmail.com")
-                        .firstName("Arkadiusz")
-                        .lastName("Kupiec")
                         .webinar(webinarRepository.getById(1L))
                         .status(ReservationStatus.COMPLETED)
                         .build()

@@ -21,5 +21,5 @@ public class Webinar {
     private List<Reservation> reservations;
     private int remainingSlots;
     private Double price;
-    private boolean completed = false;
+    private boolean completed;
 }
